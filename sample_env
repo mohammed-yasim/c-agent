@@ -1,0 +1,5 @@
+PORT=3001
+HOST=localhost
+DB=test
+DB_USER=test1
+DB_PASS=TEST@localhost123
