@@ -15,7 +15,7 @@ app.get('/', (request, response) => {
     response.redirect(`/app?ip=${encodeURI(ip)}`);
 });
 app.get('/sync', (req, res) => {
-    infox_db.sync().then((data) => {
+    infox_db.sync({force:true}).then((data) => {
         res.send('Synced');
     }, (err) => {
         res.send(`${err}`);
