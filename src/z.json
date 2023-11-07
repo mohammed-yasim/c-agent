@@ -1,0 +1,72 @@
+{
+    "service_area": {
+      "locations": [
+        {
+          "name": "JALJAL",
+          "place": "ward1",
+          "geo": {
+            "lat": 0,
+            "lng": 0
+          },
+          "day_book": [{ "id": "" }],
+          "customers": [
+            {
+              "active": 0,
+              "uuid": 0,
+              "reg_no": 0,
+              "name": "Customer_1",
+              "address": "0,AB Road,CD",
+              "contact_no": "0000110000",
+              "whatsapp_no": "0000110000",
+              "qr_code": "",
+              "invoices": [
+                {
+                  "id": "1",
+                  "_type": "",
+                  "_desc": "",
+                  "amount": 200,
+                  "date": "00/00/0000",
+                  "reading": {
+                    "_previous": 0,
+                    "_current": 1,
+                    "_minimum": 1,
+                    "_maximum": 1
+                  },
+                  "deleted": 0
+                },
+                {
+                  "id": "2",
+                  "_type": "",
+                  "_desc": "",
+                  "amount": 200,
+                  "date": "00/00/0000",
+                  "reading": {
+                    "_previous": 0,
+                    "_current": 1,
+                    "_minimum": 1,
+                    "_maximum": 1
+                  },
+                  "deleted": 0
+                }
+              ],
+              "receipts": [
+                {
+                  "id": "1",
+                  "_type": "",
+                  "_desc": "",
+                  "amount": 150,
+                  "date": "00/00/0000",
+                  "deleted": 0
+                }
+              ],
+              "activity": [{ "service": "", "description": "", "deleted": 0 }]
+            }
+          ]
+        },
+        {
+          "name": "SERVICE AREA 2"
+        }
+      ]
+    }
+  }
+  

@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path'
 import cors from 'cors';
 import {infox_db} from './app_api/etc/db';
-import { Configuration } from './app_api/etc/db/model';
+import { Configuration } from './app_api/model';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -25,7 +25,7 @@ app.get('/test',(req,res)=>{
     Configuration.findAll((data)=>{
         res.json(data);
     })
-})
+});
 app.listen(3001), () => {
     console.log("API runing on Port 3001");
 };

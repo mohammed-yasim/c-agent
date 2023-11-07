@@ -4,7 +4,7 @@ var _express = _interopRequireDefault(require("express"));
 var _path = _interopRequireDefault(require("path"));
 var _cors = _interopRequireDefault(require("cors"));
 var _db = require("./app_api/etc/db");
-var _model = require("./app_api/etc/db/model");
+var _model = require("./app_api/model");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 var app = (0, _express.default)();
 app.use((0, _cors.default)());
