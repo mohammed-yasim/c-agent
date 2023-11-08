@@ -30,7 +30,6 @@ app.use('/', express.static(path.join(__dirname, '/app_vite')));
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '/app_vite/index.html'));
 });
-
 app.listen(3001), () => {
     console.log("API runing on Port 3001");
 };

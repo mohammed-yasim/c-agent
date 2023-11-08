@@ -9,7 +9,10 @@ export default function App() {
     return (<>
         <BrowserRouter>
             <Routes>
-                <Route index element={<Navigate to="app" />}></Route>
+                {/* <Route index element={<Navigate to="app" />}></Route> */}
+                <Route index element={<>
+            Version : {import.meta.env.VITE_APP_VERSION}
+                </>}></Route>
                 <Route path="/app/*" element={<AppHomeRoutes />}></Route>
             </Routes>
         </BrowserRouter>
@@ -38,10 +41,11 @@ class AppHomeRoutes extends Component {
     render() {
         return (<>
             {this.state.loaded && !this.state.error && <AppContext.Provider value={this.state.data}>
+            Version : {import.meta.env.VITE_APP_VERSION}
                 <Routes>
                     <Route index element={<AppHome />}></Route>
                 </Routes>
-                <textarea value={JSON.stringify(this.state)}/>
+                <textarea value={JSON.stringify(this.state)} />
             </AppContext.Provider>
             }
         </>);
@@ -66,7 +70,6 @@ function HomeSelector() {
     }, [])
     return (
         <>
-            Version : {import.meta.env.VITE_APP_VERSION}
             <div>
                 <select value={service_area || ''} onChange={(e) => {
                     if (e.target.value) {
@@ -78,14 +81,14 @@ function HomeSelector() {
                     <option value={''}>choose location/servce area</option>
                     {service_locations.map((location, key) => {
                         return (
-                            <option key={key} value={location._sid}>{location.name}</option>
+                            <option key={key} value={location.s_id}>{location.name}</option>
                         )
                     })}
                 </select>
             </div>
             <div>
                 {service_area && <>
-                    <AppLocation location={service_area} />
+                    <AppLocation location={ServiceAreas.find(a => a.s_id === service_area)} />
                 </>}
             </div>
         </>
@@ -93,22 +96,32 @@ function HomeSelector() {
 }
 
 function AppLocation({ location }) {
-    let service_area = location
-    return (
-        <div>
-            {service_area}
-            <hr />
+    let service_area = location;
+    let [loaded, _loaded_] = useState(false)
+    useEffect(() => {
+        if (service_area && service_area !== '') {
+            API.get(`/fetch/${service_area.s_id}`).then((response) => {
+                _loaded_(true);
+            }).catch(e => { console.log(e) })
+        }
+    }, [location])
+    return (<>
+        {loaded &&
             <div>
-                <div>Credit</div>
-                <div>Debit</div>
-                <div>Balance</div>
-            </div>
-            <div>
+                {service_area.name}
+                <hr />
                 <div>
-                    <NavLink to={`${location}/collect-monthly`}> Monthly Collection (Pending)</NavLink>
+                    <div>Credit</div>
+                    <div>Debit</div>
+                    <div>Balance</div>
                 </div>
-            </div>
+                <div>
+                    <div>
+                        <NavLink to={`${location}/collect-monthly`}> Monthly Collection (Pending)</NavLink>
+                    </div>
+                </div>
 
-        </div>
-    )
+            </div>
+        }
+    </>)
 }
