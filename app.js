@@ -9,14 +9,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var app = (0, _express.default)();
 app.use((0, _cors.default)());
 app.use(_express.default.json());
-app.use('/app/', _express.default.static(_path.default.join(__dirname, '/app_vite')));
-app.get('/app/*', (req, res) => {
-  res.sendFile(_path.default.join(__dirname, '/app_vite/index.html'));
-});
-app.get('/', (request, response) => {
-  var ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
-  response.redirect("/app?ip=".concat(encodeURI(ip)));
-});
 app.get('/sync', (req, res) => {
   _db.infox_db.sync({
     force: true
@@ -30,6 +22,10 @@ app.get('/test', (req, res) => {
   _model.Configuration.findAll(data => {
     res.json(data);
   });
+});
+app.use('/', _express.default.static(_path.default.join(__dirname, '/app_vite')));
+app.get('/*', (req, res) => {
+  res.sendFile(_path.default.join(__dirname, '/app_vite/index.html'));
 });
 app.listen(3001), () => {
   console.log("API runing on Port 3001");

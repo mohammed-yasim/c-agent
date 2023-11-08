@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Run Vite",
+        "type": "npm",
+        "script": "dev",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": {
+          "owner": "vite",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": "^(.*):\\s(.*)$",
+            "file": 1,
+            "location": 2
+          }
+        },
+        "isBackground": true,
+        "presentation": {
+          "focus": true,
+          "panel": "dedicated",
+          "showReuseMessage": true,
+          "clear": true
+        }
+      }
+    ]
+  }
+  
