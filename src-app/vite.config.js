@@ -26,6 +26,7 @@ export default defineConfig({
       workbox: {
         clientsClaim: true,
         skipWaiting: true,
+        navigateFallbackDenylist: [/^\/api/]
       },
       devOptions: {
         enabled: true

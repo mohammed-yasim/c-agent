@@ -3,6 +3,7 @@ import path from 'path'
 import cors from 'cors';
 import {infox_db} from './app_api/etc/db';
 import { Configuration } from './app_api/model';
+import API from './app_api';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -11,9 +12,9 @@ app.use(express.json());
 //     let ip = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
 //     response.redirect(`/app?ip=${encodeURI(ip)}`);
 // });
-
+app.use('/api',API);
 app.get('/sync', (req, res) => {
-    infox_db.sync({force:true}).then((data) => {
+    infox_db.sync({force:false}).then((data) => {
         res.send('Synced');
     }, (err) => {
         res.send(`${err}`);
