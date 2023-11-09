@@ -10,14 +10,37 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 {/* <Route index element={<Navigate to="app" />}></Route> */}
-                <Route index element={<>
-            Version : {import.meta.env.VITE_APP_VERSION}
-                </>}></Route>
+                <Route index element={<HomePage />}></Route>
                 <Route path="/app/*" element={<AppHomeRoutes />}></Route>
+                <Route path="/login" element={<LoginCheck />} />
             </Routes>
         </BrowserRouter>
     </>)
 }
+
+function LoginCheck() {
+    return (<>
+        <LoginPage />
+    </>)
+}
+
+function LoginPage() {
+    return (
+        <>
+            <NavLink to="/app">Login</NavLink>
+        </>)
+}
+
+function HomePage() {
+    return (
+        <>
+            Version : {import.meta.env.VITE_APP_VERSION}<br />
+            <NavLink to="/login">Login</NavLink>
+
+        </>
+    )
+}
+
 class AppHomeRoutes extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +64,7 @@ class AppHomeRoutes extends Component {
     render() {
         return (<>
             {this.state.loaded && !this.state.error && <AppContext.Provider value={this.state.data}>
-            Version : {import.meta.env.VITE_APP_VERSION}
+                Version : {import.meta.env.VITE_APP_VERSION}
                 <Routes>
                     <Route index element={<AppHome />}></Route>
                 </Routes>
