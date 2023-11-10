@@ -4,6 +4,7 @@ import { API } from "./etc/api";
 import './etc/style.css';
 import Example404 from "./etc/componenets/404";
 import HomePage from "./etc/pages/homepage";
+import { getToken, setUserSession } from "./etc/auth";
 
 const AppContext = createContext();
 
@@ -13,8 +14,8 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 {/* <Route index element={<Navigate to="app" />}></Route> */}
-                <Route index element={<HomePage />}></Route>
-                <Route path="/app/*" element={<AppHomeRoutes />}></Route>
+                <Route index element={getToken() === null ? <HomePage /> : <Navigate replace to="/app" />}></Route>
+                <Route path="/app/*" element={getToken() !== null ? <AppHomeRoutes /> : <Navigate replace to="/login" />}></Route>
                 <Route path="/login" element={<LoginCheck />} />
                 <Route path="*" element={<Example404 />} />
             </Routes>
@@ -47,7 +48,7 @@ function LoginPage() {
         // Perform authentication logic here (e.g., send data to a server, validate credentials)
         console.log('Form submitted with data:', formData);
         // Add your authentication logic here
-
+        setUserSession('username');
         // Reset the form after submission
         setFormData({
             username: '',
