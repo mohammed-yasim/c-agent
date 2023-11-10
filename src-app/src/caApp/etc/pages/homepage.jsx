@@ -6,27 +6,34 @@ import { ArrowPathIcon, CloudArrowUpIcon as CloudArrowUpIconOutline, FingerPrint
 function HomePage() {
     return (
         <>
-            <Hero />
-            <Example />
-            <Features />
+            <div className="bg-gray-900 select-none" onContextMenu={(e) => { e.preventDefault(); return false }}>
+                <header className="shadow">
+                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                        <h1 className="text-3xl font-bold tracking-tight text-white">cAgent <span className="text-xs rounded-lg bg-red-500 p-1 text-white font-light">{import.meta.env.VITE_APP_VERSION}</span></h1>
+                    </div>
+                </header>
+                <main>
 
-            <ExploreUS />
+                    <Hero />
+                    <Example />
+                    <Features />
 
-            <footer class="bg-white  shadow dark:bg-gray-900">
-                <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-                    <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</span>
-                    <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" class="hover:underline">Azba India</a></span>
-                </div>
-            </footer>
-
-
+                    <ExploreUS />
+                </main>
+                <footer class="bg-white  shadow dark:bg-gray-900">
+                    <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+                        <span class="block text-sm text-gray-500 text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</span>
+                        <span class="block text-sm text-gray-500 text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" class="hover:underline">Azba India</a></span>
+                    </div>
+                </footer>
+            </div>
         </>
     )
 }
 function Hero() {
     return (
-        <div className="bg-white">
-            <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
+        <div className="bg-white" style={{backgroundImage:"url(https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)"}}>
+            <div className="mx-auto max-w-7xl sm:px-6 sm:py-32 lg:px-8 h-screen sm:h-auto">
                 <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
                     <svg
                         viewBox="0 0 1024 1024"
@@ -65,11 +72,9 @@ function Hero() {
                     </div>
                     <div className="relative mt-16 h-80 lg:mt-8">
                         <img
-                            className="absolute left-0 top-0 w-[57rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
+                            className="absolute left-0 top-[2rem] w-[48rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
                             src="https://images.unsplash.com/photo-1520254553641-2eed4cf2ef26?q=80&w=1930&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             alt="App screenshot"
-                            width={1824}
-                            height={1080}
                         />
                     </div>
                 </div>
@@ -252,8 +257,8 @@ const links = [
 ]
 const stats = [
     { name: 'Area Served', value: '0' },
-    { name: 'Customers', value: '1+' },
-    { name: 'Transactions', value: '1' },
+    { name: 'Customers', value: '0' },
+    { name: 'Transactions', value: '0' },
     { name: 'Uptime', value: '99.9%' },
 ]
 
