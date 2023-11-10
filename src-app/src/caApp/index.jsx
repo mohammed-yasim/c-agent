@@ -2,6 +2,8 @@ import React, { Component, createContext, useContext, useEffect, useState } from
 import { BrowserRouter, NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { API } from "./etc/api";
 
+import { Dropdown } from 'primereact/dropdown';
+        
 const AppContext = createContext();
 
 
@@ -25,10 +27,65 @@ function LoginCheck() {
 }
 
 function LoginPage() {
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Perform authentication logic here (e.g., send data to a server, validate credentials)
+        console.log('Form submitted with data:', formData);
+        // Add your authentication logic here
+
+        // Reset the form after submission
+        setFormData({
+            username: '',
+            password: '',
+        });
+    };
+
     return (
-        <>
-            <NavLink to="/app">Login</NavLink>
-        </>)
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="username">Username:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    );
+
 }
 
 function HomePage() {
@@ -110,10 +167,23 @@ function HomeSelector() {
                 </select>
             </div>
             <div>
+                <span className="p-float-label">
+                    <Dropdown inputId="dd-city" value={service_area || ''} onChange={(e) =>{
+                          if (e.value) {
+                            sessionStorage.setItem('service_area', e.value);
+                        }
+                        _service_area_(e.value);
+    
+                    }} options={service_locations} optionLabel="name" optionValue="s_id" className="w-full md:w-14rem p-inputtext-sm" />
+                    <label htmlFor="dd-city">Select a City</label>
+                </span>
+            </div>
+            <div>
                 {service_area && <>
                     <AppLocation location={ServiceAreas.find(a => a.s_id === service_area)} />
                 </>}
             </div>
+
         </>
     )
 }
