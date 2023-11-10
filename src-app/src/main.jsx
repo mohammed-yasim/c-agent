@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom/client';
 import App from './caApp';
 import { registerSW } from 'virtual:pwa-register'
 
-//theme
-import "primereact/resources/themes/tailwind-light/theme.css";
-        
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App/>
