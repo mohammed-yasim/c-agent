@@ -14,16 +14,29 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 {/* <Route index element={<Navigate to="app" />}></Route> */}
-                <Route index element={!getToken()? <HomePage /> : <Navigate replace to="/app" />}></Route>
-                <Route path="/app/*" element={<LoginCheck />}></Route>
-                <Route path="/login" element={!getToken()? <LoginPage /> : <Navigate replace to="/app" />} />
+                <Route index element={<HomePage />}></Route>
+                <Route path="/app/*" element={<AppCheck />}></Route>
+                <Route path="/login" element={<LoginCheck />} />
+                <Route path="/logout" element={<LogoutAction />} />
                 <Route path="*" element={<Example404 />} />
             </Routes>
         </BrowserRouter>
     </>)
 }
 
+function LogoutAction() {
+    if (removeUserSession()) {
+        return (<Navigate replace to="/" />)
+    }
+}
+
 function LoginCheck() {
+    if (getToken() === null) {
+        return <LoginPage />
+    } else { return <Navigate replace to="/app" /> }
+}
+
+function AppCheck() {
     if (getToken() !== null) {
         return <AppHomeRoutes />
     } else { return <Navigate replace to="/login" /> }
@@ -163,8 +176,7 @@ function AppHome() {
     return (<>
         <HomeSelector />
         <button onClick={() => {
-            removeUserSession();
-            navigate('/');
+            navigate('/logout');
         }}>
             Logout
         </button>

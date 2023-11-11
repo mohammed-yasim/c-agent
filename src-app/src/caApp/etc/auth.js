@@ -4,9 +4,11 @@ const getToken = () => {
 };
 const setUserSession = (token) => {
     localStorage.setItem("token", token);
+    return true
 };
 const removeUserSession = () => {
     localStorage.removeItem("token");
+    return true
 };
 
 
