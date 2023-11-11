@@ -1,37 +1,42 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Navigate } from "react-router-dom";
 import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid'
 import { ArrowPathIcon, CloudArrowUpIcon as CloudArrowUpIconOutline, FingerPrintIcon, LockClosedIcon as LockClosedIconOutline } from '@heroicons/react/24/outline'
+import { getToken } from "../auth";
 
 
 function HomePage() {
-    return (
-        <>
-            <div className="bg-gray-900 select-none" onContextMenu={(e) => { e.preventDefault(); return false }}>
-                <header className="shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold tracking-tight text-white">cAgent <span className="text-xs rounded-lg bg-red-500 p-1 text-white font-light">{import.meta.env.VITE_APP_VERSION}</span></h1>
-                    </div>
-                </header>
-                <main>
+    if (getToken() === null) {
+        return (
+            <>
+                <div className="bg-gray-900 select-none" onContextMenu={(e) => { e.preventDefault(); return false }}>
+                    <header className="shadow">
+                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                            <h1 className="text-3xl font-bold tracking-tight text-white">cAgent <span className="text-xs rounded-lg bg-red-500 p-1 text-white font-light">{import.meta.env.VITE_APP_VERSION}</span></h1>
+                        </div>
+                    </header>
+                    <main>
 
-                    <Hero />
-                    <Example />
-                    <Features />
-                    <ExploreUS />
-                </main>
-                <footer class="bg-white  shadow dark:bg-gray-900">
-                    <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-                        <span class="block text-xs text-gray-500 text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</span>
-                        <span class="block text-sm text-gray-500 text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" class="hover:underline">Azba India</a></span>
-                    </div>
-                </footer>
-            </div>
-        </>
-    )
+                        <Hero />
+                        <Example />
+                        <Features />
+                        <ExploreUS />
+                    </main>
+                    <footer className="bg-white  shadow dark:bg-gray-900">
+                        <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+                            <span className="block text-xs text-gray-500 text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</span>
+                            <span className="block text-sm text-gray-500 text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" className="hover:underline">Azba India</a></span>
+                        </div>
+                    </footer>
+                </div>
+            </>
+        )
+    } else {
+        return <Navigate replace to="/app" />
+    }
 }
 function Hero() {
     return (
-        <div className="bg-white" style={{backgroundImage:"url(https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)",backgroundSize:'cover',backgroundPosition:'center'}}>
+        <div className="bg-white" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)", backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8 h-screen">
                 <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
                     <svg
@@ -51,7 +56,7 @@ function Hero() {
                         <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                             Streamlining and Billing
                             <br />
-                             for a Sustainable Future.
+                            for a Sustainable Future.
                         </h2>
                         <p className="mt-6 text-lg leading-8 text-gray-300">
                             Ac euismod vel sit maecenas id pellentesque eu sed consectetur. Malesuada adipiscing sagittis vel nulla.

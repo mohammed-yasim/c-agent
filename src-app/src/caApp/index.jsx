@@ -1,10 +1,10 @@
 import React, { Component, createContext, useContext, useEffect, useState } from "react";
-import { BrowserRouter, NavLink, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, NavLink, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { API } from "./etc/api";
 import './etc/style.css';
 import Example404 from "./etc/componenets/404";
 import HomePage from "./etc/pages/homepage";
-import { getToken, setUserSession } from "./etc/auth";
+import { getToken, removeUserSession, setUserSession } from "./etc/auth";
 
 const AppContext = createContext();
 
@@ -14,9 +14,9 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 {/* <Route index element={<Navigate to="app" />}></Route> */}
-                <Route index element={getToken() === null ? <HomePage /> : <Navigate replace to="/app" />}></Route>
-                <Route path="/app/*" element={getToken() !== null ? <AppHomeRoutes /> : <Navigate replace to="/login" />}></Route>
-                <Route path="/login" element={<LoginCheck />} />
+                <Route index element={!getToken()? <HomePage /> : <Navigate replace to="/app" />}></Route>
+                <Route path="/app/*" element={<LoginCheck />}></Route>
+                <Route path="/login" element={!getToken()? <LoginPage /> : <Navigate replace to="/app" />} />
                 <Route path="*" element={<Example404 />} />
             </Routes>
         </BrowserRouter>
@@ -24,12 +24,13 @@ export default function App() {
 }
 
 function LoginCheck() {
-    return (<>
-        <LoginPage />
-    </>)
+    if (getToken() !== null) {
+        return <AppHomeRoutes />
+    } else { return <Navigate replace to="/login" /> }
 }
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -48,27 +49,21 @@ function LoginPage() {
         // Perform authentication logic here (e.g., send data to a server, validate credentials)
         console.log('Form submitted with data:', formData);
         // Add your authentication logic here
-        setUserSession('username');
+        setUserSession(formData.username);
         // Reset the form after submission
         setFormData({
             username: '',
             password: '',
         });
+        // Redirect
+        navigate('/app');
     };
 
     return (
         <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <img
-                    className="mx-auto h-10 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
-                />
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    Sign in to your account
-                </h2>
+                <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900">cAgent <span className="text-xs rounded-lg bg-red-500 p-1 text-white font-light">{import.meta.env.VITE_APP_VERSION}</span></h1>
             </div>
-
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
@@ -84,7 +79,7 @@ function LoginPage() {
                                 value={formData.username}
                                 onChange={handleInputChange}
                                 required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                         </div>
                     </div>
@@ -109,7 +104,7 @@ function LoginPage() {
                                 value={formData.password}
                                 onChange={handleInputChange}
                                 required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                         </div>
                     </div>
@@ -153,10 +148,10 @@ class AppHomeRoutes extends Component {
     render() {
         return (<>
             {this.state.loaded && !this.state.error && <AppContext.Provider value={this.state.data}>
-                Version : {import.meta.env.VITE_APP_VERSION}
                 <Routes>
                     <Route index element={<AppHome />}></Route>
                 </Routes>
+
                 <textarea value={JSON.stringify(this.state)} />
             </AppContext.Provider>
             }
@@ -164,9 +159,15 @@ class AppHomeRoutes extends Component {
     }
 }
 function AppHome() {
-
+    let navigate = useNavigate();
     return (<>
         <HomeSelector />
+        <button onClick={() => {
+            removeUserSession();
+            navigate('/');
+        }}>
+            Logout
+        </button>
     </>)
 }
 function HomeSelector() {
