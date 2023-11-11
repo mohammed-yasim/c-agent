@@ -118,7 +118,7 @@ Activity.init({
 }, { sequelize: infox_db });
 
 
-User.hasMany(ServiceArea, { foreignKey: { name: 'owner_u_id', allowNull: false }, as: ' ' });
+User.hasMany(ServiceArea, { foreignKey: { name: 'owner_u_id', allowNull: false }, as: 'serviceareas' });
 User.hasMany(User, { foreignKey: { name: 'owner_u_id', allowNull: true }, as: 'agents' });
 
 
