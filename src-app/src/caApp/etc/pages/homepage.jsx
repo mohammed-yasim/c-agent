@@ -37,7 +37,7 @@ function HomePage() {
 function Hero() {
     return (
         <div className="bg-white" style={{ backgroundImage: "url(https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-            <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8 h-screen">
+            <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8 min-h-screen">
                 <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
                     <svg
                         viewBox="0 0 1024 1024"
