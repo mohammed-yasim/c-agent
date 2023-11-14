@@ -63,14 +63,18 @@ function LoginPage() {
         // Perform authentication logic here (e.g., send data to a server, validate credentials)
         console.log('Form submitted with data:', formData);
         // Add your authentication logic here
-        setUserSession(formData.username);
-        // Reset the form after submission
-        setFormData({
-            username: '',
-            password: '',
-        });
+        API.post('login',formData).then((response)=>{
+            setUserSession(response.data?.token);
+            navigate('/app');
+        }).catch(error=>{
+
+        })
+        // // Reset the form after submission
+        // setFormData({
+        //     username: '',
+        //     password: '',
+        // });
         // Redirect
-        navigate('/app');
     };
 
     return (
@@ -163,12 +167,15 @@ class AppHomeRoutes extends Component {
         return (<>
             {!this.state.loaded && !this.state.error && <>Loading..</>}
             {this.state.loaded && !this.state.error && <AppContext.Provider value={this.state.data}>
-                <div className="bg-white min-h-screen">
+                <div className="bg-white min-h-screen select-none">
                     <Routes>
                         <Route index element={<AppHome />}></Route>
+                        <Route path="collection/:service_area/pending" element={<AppHome />}></Route>
+                        <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
+                        <Route path="customers/:service_area/*" element={<>Null</>}></Route>
                     </Routes>
                 </div>
-                {/* <textarea value={JSON.stringify(this.state)} /> */}
+                <p value={JSON.stringify(this.state)} />
             </AppContext.Provider>
             }
             {
@@ -193,14 +200,6 @@ function AppHome() {
     </>)
 }
 
-const people = [
-    { name: 'Wade Cooper' },
-    { name: 'Arlene Mccoy' },
-    { name: 'Devon Webb' },
-    { name: 'Tom Cook' },
-    { name: 'Tanya Fox' },
-    { name: 'Hellen Schmidt' },
-]
 
 function HomeSelector() {
     const { ServiceAreas } = useContext(AppContext);
@@ -303,7 +302,6 @@ function HomeSelector() {
                 <div className="">
                     <input type="date" value={service_date} onChange={(e) => {
                         if (new Date(e.target.value).getTime() >= new Date().getTime()) {
-                            alert("The Date must be Bigger or Equal to today date");
                             return false;
                         } else {
                             _service_date_(e.target.value);
@@ -322,11 +320,13 @@ function HomeSelector() {
 
 function AppLocation({ location, date }) {
     let service_area = location;
-    let [loaded, _loaded_] = useState(false)
+    let [loaded, _loaded_] = useState(false);
+    let [data,_data_] = useState(); 
     useEffect(() => {
         if (service_area && service_area !== '') {
             API.get(`/fetch/${service_area.s_id}?date=${date}`).then((response) => {
                 _loaded_(true);
+                _data_(response.data);
             }).catch(e => { console.log(e) })
         }
     }, [location,date])
@@ -336,17 +336,17 @@ function AppLocation({ location, date }) {
                 <div className="px-2">
                     {service_area.name} on {date}
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center content-center">
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                        <h1 className="text-4xl">₹0.00</h1>
+                        <h1 className="text-4xl">₹{ data?.balance?.credit|| '0.00'}</h1>
                         <h2 className="text-lg">Income</h2>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                        <h1 className="text-4xl">₹0.00</h1>
+                        <h1 className="text-4xl">₹{data?.balance?.debit|| '0.00'}</h1>
                         <h2 className="text-lg">Expense</h2>
                     </div>
                     <div className="col-span-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <h2 className="text-3xl"><span>₹0.00</span> Balance</h2>
+                        <h2 className="text-3xl"><span>{parseFloat(data?.balance?.credit-data?.balance?.debit).toFixed(2) >= 0 ? "₹"+parseFloat(data?.balance?.credit-data?.balance?.debit).toFixed(2):"- ₹"+(parseFloat(data?.balance?.credit-data?.balance?.debit).toFixed(2)*-1)}</span> Balance</h2>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
                         <h1 className="text-4xl">0</h1>
@@ -357,15 +357,19 @@ function AppLocation({ location, date }) {
                         <h2 className="text-lg"> Collections</h2>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
+                        <NavLink to={`customers/${service_area.s_id}/`}>
                         <h1 className="text-4xl">0</h1>
                         <h2 className="text-lg">Cutomers</h2>
+                        </NavLink>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
                         <h1 className="text-4xl">0</h1>
-                        <h2 className="text-lg">Invoices</h2>
+                        <h2 className="text-lg">Transactions</h2>
                     </div>
                 </div>
+                {JSON.stringify(data)}
             </div>
+            
         }
         {
             !loaded && <>Loading..</>

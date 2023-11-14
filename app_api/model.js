@@ -116,7 +116,7 @@ DayBook.init({
     type: _db.infox_datatype.STRING
   },
   date: {
-    type: _db.infox_datatype.DATE,
+    type: _db.infox_datatype.DATEONLY,
     allowNull: false
   },
   description: {
@@ -230,7 +230,7 @@ Invoice.init({
     allowNull: false
   },
   date: {
-    type: _db.infox_datatype.DATE,
+    type: _db.infox_datatype.DATEONLY,
     allowNull: false
   },
   deleted: {
@@ -263,7 +263,7 @@ Receipt.init({
     allowNull: false
   },
   date: {
-    type: _db.infox_datatype.DATE,
+    type: _db.infox_datatype.DATEONLY,
     allowNull: false
   },
   deleted: {

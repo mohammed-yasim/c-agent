@@ -48,7 +48,7 @@ class DayBook extends infox_model { }
 
 DayBook.init({
     referenceNumber: { type: infox_datatype.STRING },
-    date: { type: infox_datatype.DATE, allowNull: false },
+    date: { type: infox_datatype.DATEONLY, allowNull: false },
     description: { type: infox_datatype.STRING, allowNull: false },
     debitAmount: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
     creditAmount: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
@@ -91,7 +91,7 @@ Invoice.init({
     _desc: { type: infox_datatype.TEXT, allowNull: false },
     //-
     amount: { type: infox_datatype.DECIMAL, allowNull: false },
-    date: { type: infox_datatype.DATE, allowNull: false },
+    date: { type: infox_datatype.DATEONLY, allowNull: false },
     //--
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
     //--
@@ -104,7 +104,7 @@ Receipt.init({
     _desc: { type: infox_datatype.TEXT, allowNull: false },
     //-
     amount: { type: infox_datatype.DECIMAL, allowNull: false },
-    date: { type: infox_datatype.DATE, allowNull: false },
+    date: { type: infox_datatype.DATEONLY, allowNull: false },
     //--
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
     //
