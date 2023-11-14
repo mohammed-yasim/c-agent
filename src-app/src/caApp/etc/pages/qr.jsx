@@ -50,24 +50,31 @@ const Test = ({ }) => {
         requestAnimationFrame(captureFrame);
     }, [captureFrame]);
 
+    const videoConstraints = {
+        facingMode: 'environment', // Use 'environment' to request the back camera
+    };
+
+
     return (
         <div>
-             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="relative bg-black">
-            <Webcam
-                audio={false}
-                height={640}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                width={640}
-            />
-           {scannedCode && (
-        <p className="mb-2 text-lg font-semibold text-red-500 text-center">
-          {scannedCode}
-        </p>
-      )}
-        </div>
-        </div>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+                <div className="relative bg-black p-4">
+                    <Webcam
+                        audio={false}
+                        height={640}
+                        ref={webcamRef}
+                        screenshotFormat="image/jpeg"
+                        width={640}
+                        videoConstraints={videoConstraints}
+                        className="rounded-md"
+                    />
+                    {scannedCode && (
+                        <p className="mb-2 text-lg font-semibold text-red-500 text-center">
+                            {scannedCode}
+                        </p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
