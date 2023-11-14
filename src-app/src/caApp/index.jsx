@@ -6,7 +6,7 @@ import Example404 from "./etc/componenets/404";
 import HomePage from "./etc/pages/homepage";
 import { getToken, removeUserSession, setUserSession } from "./etc/auth";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon, QrCodeIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronUpDownIcon, QrCodeIcon, UsersIcon } from '@heroicons/react/20/solid'
 import Test from "./etc/pages/qr";
 const AppContext = createContext();
 
@@ -381,6 +381,12 @@ function AppLocation({ location, date }) {
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
                     <NavLink to={`qr/${service_area?.s_id}`}>
                         <h1 className="text-4xl"><QrCodeIcon/></h1>
+                        <h2 className="text-lg">QR</h2>
+                        </NavLink>
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
+                    <NavLink to={`setting/${service_area?.s_id}`}>
+                        <h1 className="text-4xl"><UsersIcon/></h1>
                         <h2 className="text-lg">QR</h2>
                         </NavLink>
                     </div>
