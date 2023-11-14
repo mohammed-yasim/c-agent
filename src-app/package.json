@@ -1,7 +1,7 @@
 {
   "name": "collection-agent",
   "private": true,
-  "version": "0.0.9",
+  "version": "0.1.0",
   "type": "module",
   "homepage": "app",
   "scripts": {
@@ -14,9 +14,12 @@
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "axios": "^1.6.0",
+    "jsqr": "^1.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.18.0"
+    "react-qr-scanner": "^1.0.0-alpha.11",
+    "react-router-dom": "^6.18.0",
+    "react-webcam": "^7.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

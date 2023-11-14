@@ -16,7 +16,7 @@ API.post('/login', (req, res) => {
     if (username === 'user@domain.tld' && password === 'password') {
         let data = {}
         data['dXNlcg'] = new Buffer.from('8dd9e64e-7e02-11ee-acae-5405dbe7a86c').toString('base64');
-        const token = jwt.sign(data, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign(data, secretKey, { expiresIn: '24h' });
         res.json({ token });
     } else {
         res.status(401).send('Invalid credentials');
@@ -29,9 +29,11 @@ API.use((req, res, next) => {
         jwt.verify(token, secretKey, (error, decoded) => {
             if (error) {
                 console.error('JWT Verification Error:', error.message);
+                res.status(401).send('error');
             } else {
                 // console.log('Decoded JWT Payload:', decoded);
-                req.user_data = Buffer.from(decoded.dXNlcg, 'base64').toString('utf-8');
+                req.user_data = decoded;
+                req._uid = Buffer.from(decoded.dXNlcg, 'base64').toString('utf-8');
                 next();
             }
         });

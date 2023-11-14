@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getToken } from "./auth";
+import { getToken, removeUserSession } from "./auth";
 const API = axios.create({
     baseURL: import.meta.env.VITE_API_ENDPOINT,
     // baseURL: 'https://cagent.node.azba.in/api',
@@ -27,6 +27,12 @@ API.interceptors.response.use(
     },
     function (error) {
         // Do something with response error
+        if (error.response && error.response.status === 401) {
+            // Handle 401 error (e.g., redirect to login page or perform token refresh)
+            console.log('Unauthorized! Redirect to login page or refresh token.');
+            removeUserSession();
+            window.location.reload();
+        }
         return Promise.reject(error);
     }
 );

@@ -6,7 +6,8 @@ import Example404 from "./etc/componenets/404";
 import HomePage from "./etc/pages/homepage";
 import { getToken, removeUserSession, setUserSession } from "./etc/auth";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronUpDownIcon, QrCodeIcon } from '@heroicons/react/20/solid'
+import Test from "./etc/pages/qr";
 const AppContext = createContext();
 
 
@@ -63,10 +64,10 @@ function LoginPage() {
         // Perform authentication logic here (e.g., send data to a server, validate credentials)
         console.log('Form submitted with data:', formData);
         // Add your authentication logic here
-        API.post('login',formData).then((response)=>{
+        API.post('login', formData).then((response) => {
             setUserSession(response.data?.token);
             navigate('/app');
-        }).catch(error=>{
+        }).catch(error => {
 
         })
         // // Reset the form after submission
@@ -173,6 +174,7 @@ class AppHomeRoutes extends Component {
                         <Route path="collection/:service_area/pending" element={<AppHome />}></Route>
                         <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
                         <Route path="customers/:service_area/*" element={<>Null</>}></Route>
+                        <Route path="qr/:_sid" element={<Test/>}></Route>
                     </Routes>
                 </div>
                 <p value={JSON.stringify(this.state)} />
@@ -191,6 +193,9 @@ function AppHome() {
     return (<>
         <div className="p-4">
             <HomeSelector />
+
+            <NavLink to="qr">QR</NavLink>
+
             <button onClick={() => {
                 navigate('/logout');
             }}>
@@ -321,7 +326,7 @@ function HomeSelector() {
 function AppLocation({ location, date }) {
     let service_area = location;
     let [loaded, _loaded_] = useState(false);
-    let [data,_data_] = useState(); 
+    let [data, _data_] = useState();
     useEffect(() => {
         if (service_area && service_area !== '') {
             API.get(`/fetch/${service_area.s_id}?date=${date}`).then((response) => {
@@ -329,7 +334,7 @@ function AppLocation({ location, date }) {
                 _data_(response.data);
             }).catch(e => { console.log(e) })
         }
-    }, [location,date])
+    }, [location, date])
     return (<>
         {loaded && date &&
             <div>
@@ -338,38 +343,51 @@ function AppLocation({ location, date }) {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center content-center">
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                        <h1 className="text-4xl">₹{ data?.balance?.credit|| '0.00'}</h1>
+                        <h1 className="text-4xl">₹{data?.balance?.credit || '0.00'}</h1>
                         <h2 className="text-lg">Income</h2>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                        <h1 className="text-4xl">₹{data?.balance?.debit|| '0.00'}</h1>
+                        <h1 className="text-4xl">₹{data?.balance?.debit || '0.00'}</h1>
                         <h2 className="text-lg">Expense</h2>
                     </div>
                     <div className="col-span-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <h2 className="text-3xl"><span>{parseFloat(data?.balance?.credit-data?.balance?.debit).toFixed(2) >= 0 ? "₹"+parseFloat(data?.balance?.credit-data?.balance?.debit).toFixed(2):"- ₹"+(parseFloat(data?.balance?.credit-data?.balance?.debit).toFixed(2)*-1)}</span> Balance</h2>
-                    </div>
-                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <h1 className="text-4xl">0</h1>
-                        <h2 className="text-lg">Pending</h2>
-                    </div>
-                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <h1 className="text-4xl">0</h1>
-                        <h2 className="text-lg"> Collections</h2>
+                        <h2 className="text-3xl"><span>{parseFloat(data?.balance?.credit - data?.balance?.debit).toFixed(2) >= 0 ? "₹" + parseFloat(data?.balance?.credit - data?.balance?.debit).toFixed(2) : "- ₹" + (parseFloat(data?.balance?.credit - data?.balance?.debit).toFixed(2) * -1)}</span> Balance</h2>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
                         <NavLink to={`customers/${service_area.s_id}/`}>
-                        <h1 className="text-4xl">0</h1>
-                        <h2 className="text-lg">Cutomers</h2>
+                            <h1 className="text-4xl">{data?.customers || 0}</h1>
+                            <h2 className="text-lg">Cutomers</h2>
+                        </NavLink>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
+                    <NavLink to={`customers/${service_area.s_id}/`}>
+                        <h1 className="text-4xl">{data?.collection?.collect || 0}</h1>
+                        <h2 className="text-lg"> Collections</h2>
                         </NavLink>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <h1 className="text-4xl">0</h1>
+                    <NavLink to={`customers/${service_area.s_id}/`}>
+                        <h1 className="text-4xl">{data?.collection?.pending || 0}</h1>
+                        <h2 className="text-lg">Pending</h2>
+                        </NavLink>
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
+                    <NavLink to={`customers/${service_area.s_id}/`}>
+                        <h1 className="text-4xl">{data?.balance.transactions || 0}</h1>
                         <h2 className="text-lg">Transactions</h2>
+                        </NavLink>
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
+                    <NavLink to={`qr/${service_area?.s_id}`}>
+                        <h1 className="text-4xl"><QrCodeIcon/></h1>
+                        <h2 className="text-lg">QR</h2>
+                        </NavLink>
                     </div>
                 </div>
                 {JSON.stringify(data)}
             </div>
-            
+
         }
         {
             !loaded && <>Loading..</>
