@@ -183,13 +183,16 @@ class AppHomeRoutes extends Component {
                         <Route path="*" element={<Example404 />} />
 
                     </Routes>
+                    <div className="block p-6 text-xs text-gray-500 text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</div>
                 </div>
                 <p value={JSON.stringify(this.state)} />
             </AppContext.Provider>
             }
             {
                 this.state.error && <>
-                    Network Error</>
+                    Network Error <br />
+                    <div className="block p-6 text-xs text-gray-500 text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</div>
+                </>
             }
 
         </>);
@@ -234,7 +237,7 @@ function HomeSelector() {
     return (
         <>
 
-            <div className="w-full grid grid-cols-6">
+            <div className="w-full grid grid-cols-6 gap-1">
                 <div className="col-span-4">
                     <Listbox value={service_area?.s_id} onChange={(value) => {
                         if (value) {
@@ -361,15 +364,12 @@ function AppLocation({ location, date }) {
             API.get(`/fetch/${service_area.s_id}?date=${date}`).then((response) => {
                 _loaded_(true);
                 _data_(response.data);
-            }).catch(e => { console.log(e);_error_(`${e}`);_loaded_(true)})
+            }).catch(e => { console.log(e); _error_(`${e}`); _loaded_(true) })
         }
     }, [location, date])
     return (<>
         {loaded && date && data &&
-            <div>
-                <div className="px-2">
-                    {service_area.name} on {date}
-                </div>
+            <div className="pt-4">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center content-center">
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
                         <h1 className="text-4xl">₹{data?.balance?.credit || '0.00'}</h1>
