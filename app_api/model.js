@@ -131,10 +131,6 @@ DayBook.init({
     type: _db.infox_datatype.DECIMAL(10, 2),
     allowNull: false
   },
-  balance: {
-    type: _db.infox_datatype.DECIMAL(10, 2),
-    allowNull: false
-  },
   accountName: {
     type: _db.infox_datatype.STRING,
     allowNull: false

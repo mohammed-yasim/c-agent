@@ -6,7 +6,7 @@ import Example404 from "./etc/componenets/404";
 import HomePage from "./etc/pages/homepage";
 import { getToken, removeUserSession, setUserSession } from "./etc/auth";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon, QrCodeIcon, UsersIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronUpDownIcon, Cog6ToothIcon, DocumentChartBarIcon, MapIcon, QrCodeIcon } from '@heroicons/react/20/solid'
 import Test from "./etc/pages/qr";
 const AppContext = createContext();
 
@@ -174,7 +174,7 @@ class AppHomeRoutes extends Component {
                         <Route path="collection/:service_area/pending" element={<AppHome />}></Route>
                         <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
                         <Route path="customers/:service_area/*" element={<>Null</>}></Route>
-                        <Route path="qr/:_sid" element={<Test/>}></Route>
+                        <Route path="qr/:_sid" element={<Test />}></Route>
                     </Routes>
                 </div>
                 <p value={JSON.stringify(this.state)} />
@@ -193,8 +193,6 @@ function AppHome() {
     return (<>
         <div className="p-4">
             <HomeSelector />
-
-            <NavLink to="qr">QR</NavLink>
 
             <button onClick={() => {
                 navigate('/logout');
@@ -361,35 +359,54 @@ function AppLocation({ location, date }) {
                     </div>
 
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                    <NavLink to={`customers/${service_area.s_id}/`}>
-                        <h1 className="text-4xl">{data?.collection?.collect || 0}</h1>
-                        <h2 className="text-lg"> Collections</h2>
+                        <NavLink to={`customers/${service_area.s_id}/`}>
+                            <h1 className="text-4xl">{data?.collection?.collect || 0}</h1>
+                            <h2 className="text-lg"> Collections</h2>
                         </NavLink>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                    <NavLink to={`customers/${service_area.s_id}/`}>
-                        <h1 className="text-4xl">{data?.collection?.pending || 0}</h1>
-                        <h2 className="text-lg">Pending</h2>
+                        <NavLink to={`customers/${service_area.s_id}/`}>
+                            <h1 className="text-4xl">{data?.collection?.pending || 0}</h1>
+                            <h2 className="text-lg">Pending</h2>
                         </NavLink>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                    <NavLink to={`customers/${service_area.s_id}/`}>
-                        <h1 className="text-4xl">{data?.balance.transactions || 0}</h1>
-                        <h2 className="text-lg">Transactions</h2>
+                        <NavLink to={`customers/${service_area.s_id}/`}>
+                            <h1 className="text-4xl">{data?.balance.transactions || 0}</h1>
+                            <h2 className="text-lg">Transactions</h2>
                         </NavLink>
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                    <NavLink to={`qr/${service_area?.s_id}`}>
-                        <h1 className="text-4xl"><QrCodeIcon/></h1>
-                        <h2 className="text-lg">QR</h2>
+                </div>
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 text-center my-4">
+
+                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
+                        <NavLink to={`qr/${service_area?.s_id}`}>
+                            <QrCodeIcon />
+                            <h2 className="text-xs">Scan QR</h2>
                         </NavLink>
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                    <NavLink to={`setting/${service_area?.s_id}`}>
-                        <h1 className="text-4xl"><UsersIcon/></h1>
-                        <h2 className="text-lg">QR</h2>
+                    {service_area.owner_u_id === data.u_id &&
+                        <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
+                            <NavLink to={`locations/${service_area?.s_id}`}>
+                                <MapIcon />
+                                <h2 className="text-xs">Overview</h2>
+                            </NavLink>
+                        </div>
+                    }
+                    <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
+                        <NavLink to={`reports/${service_area?.s_id}`}>
+                            <DocumentChartBarIcon />
+                            <h2 className="text-xs">Reports</h2>
                         </NavLink>
                     </div>
+                    {service_area.owner_u_id === data.u_id &&
+                        <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
+                            <NavLink to={`setting/${service_area?.s_id}`}>
+                                <Cog6ToothIcon />
+                                <h2 className="text-xs">setting</h2>
+                            </NavLink>
+                        </div>
+                    }
                 </div>
                 {JSON.stringify(data)}
             </div>

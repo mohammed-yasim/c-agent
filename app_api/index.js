@@ -107,7 +107,8 @@ API.get('/fetch/:_sid', (req, res) => {
       attributes: [[_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('creditAmount')), 0), 'credit'], [_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('debitAmount')), 0), 'debit']],
       where: {
         date: new Date(date),
-        _sid: _sid
+        _sid: _sid,
+        u_id: req._uid
       }
     }).then(data => {
       var append_data = {
@@ -141,12 +142,17 @@ API.get('/fetch/:_sid', (req, res) => {
       date: date,
       service_area: data[0],
       balance: data[1],
-      customers: data[2]
+      customers: data[2],
+      u_id: req._uid
     });
   }).catch(error => {
     res.status(404).send(error);
   });
 });
+API.get('/income', (req, res) => {});
+API.post('/income', (req, res) => {});
+API.get('/expense', (req, res) => {});
+API.post('/expense', (req, res) => {});
 API.use("/*", function (req, res, next) {
   res.status(404).json({
     error: 404

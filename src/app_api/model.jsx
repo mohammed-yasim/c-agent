@@ -52,7 +52,6 @@ DayBook.init({
     description: { type: infox_datatype.STRING, allowNull: false },
     debitAmount: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
     creditAmount: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
-    balance: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
     accountName: { type: infox_datatype.STRING, allowNull: false },
     notes: { type: infox_datatype.TEXT },
 
