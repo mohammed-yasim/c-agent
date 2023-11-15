@@ -14,6 +14,9 @@ var _express = require("express");
 var _model = require("./model");
 var jwt = _interopRequireWildcard(require("jsonwebtoken"));
 var _db = require("./etc/db");
+var _bcryptjs = _interopRequireDefault(require("bcryptjs"));
+var _crypto = _interopRequireDefault(require("crypto"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -22,6 +25,12 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var API = (0, _express.Router)();
+function generateRandomHash() {
+  var randomBytes = _crypto.default.randomBytes(3);
+  var randomHash = randomBytes.toString('HEX').toLowerCase();
+  console.log(randomHash);
+  return randomHash;
+}
 API.get('/', (r, s) => {
   s.status(200).json({
     status: 'OK'
@@ -33,18 +42,58 @@ API.post('/login', (req, res) => {
     username,
     password
   } = req.body;
-  if (username === 'user@domain.tld' && password === 'password') {
-    var data = {};
-    data['dXNlcg'] = new Buffer.from('8dd9e64e-7e02-11ee-acae-5405dbe7a86c').toString('base64');
-    var token = jwt.sign(data, secretKey, {
-      expiresIn: '24h'
-    });
-    res.json({
-      token
-    });
-  } else {
-    res.status(401).send('Invalid credentials');
-  }
+  _model.User.findOne({
+    where: {
+      email: username,
+      active: 1,
+      suspended: 0
+    },
+    include: [{
+      model: _model.ServiceArea,
+      through: {
+        attributes: []
+      },
+      attributes: ['s_id']
+    }]
+  }).then(user => {
+    if (user) {
+      _bcryptjs.default.compare(password, user.passwd, (error, match) => {
+        if (error) {
+          res.status(406).send("invalid credentials,".concat(error));
+        } else if (match) {
+          var _user$ServiceAreas;
+          var data = {};
+          data['service_areas'] = user === null || user === void 0 || (_user$ServiceAreas = user.ServiceAreas) === null || _user$ServiceAreas === void 0 ? void 0 : _user$ServiceAreas.map(a => {
+            return a.s_id;
+          });
+          data['dXNlcg'] = new Buffer.from(user.u_id).toString('base64');
+          data['dXNlcg'] = generateRandomHash() + data.dXNlcg + generateRandomHash();
+          var token = jwt.sign(data, secretKey, {
+            expiresIn: '24h'
+          });
+          res.json({
+            token
+          });
+        } else {
+          res.status(406).send('invalid credentials');
+        }
+      });
+    } else {
+      res.status(406).send('inactive/invalid credentials/suspended');
+    }
+  }).catch(err => {
+    res.status(404).send("".concat(err));
+  });
+});
+API.get('/gen', (req, res) => {
+  var _req$query;
+  _bcryptjs.default.hash((_req$query = req.query) === null || _req$query === void 0 ? void 0 : _req$query.password, 10, (error, hash) => {
+    if (error) {
+      res.status(500).send("? ".concat(error));
+    } else {
+      res.send(hash);
+    }
+  });
 });
 API.use((req, res, next) => {
   var token = req.headers.authorization || false;
@@ -54,9 +103,31 @@ API.use((req, res, next) => {
         console.error('JWT Verification Error:', error.message);
         res.status(401).send('error');
       } else {
-        req.user_data = decoded;
-        req._uid = Buffer.from(decoded.dXNlcg, 'base64').toString('utf-8');
-        next();
+        req.user_token_data = decoded;
+        var _uid = String(decoded.dXNlcg).slice(6).slice(0, -6);
+        req._uid = Buffer.from(_uid, 'base64').toString('utf-8');
+        _model.User.findOne({
+          where: {
+            u_id: req._uid
+          },
+          attributes: ['u_id'],
+          include: [{
+            model: _model.ServiceArea,
+            as: 'serviceareas',
+            attributes: ['s_id']
+          }]
+        }).then(data => {
+          if (data) {
+            req.user_data = data.serviceareas.map(a => {
+              return a.s_id;
+            });
+            next();
+          } else {
+            res.status(401).send('error');
+          }
+        }).catch(error => {
+          res.status(406).send(error);
+        });
       }
     });
   } else {
@@ -64,12 +135,15 @@ API.use((req, res, next) => {
   }
 });
 API.use((req, res, next) => {
-  console.log('USER:', req.user_data);
+  console.log('USER:', req.user_token_data, req.user_data);
   next();
 });
 API.get('/sync', (req, res) => {
   _model.User.findOne({
-    where: {},
+    where: {
+      u_id: req._uid
+    },
+    attributes: [],
     include: [{
       model: _model.ServiceArea,
       through: {
@@ -82,19 +156,6 @@ API.get('/sync', (req, res) => {
     } else {
       res.json({});
     }
-  }).catch(error => {
-    res.status(404).send(error);
-  });
-});
-API.get('/service_areas', (req, res) => {
-  _model.User.findOne({
-    where: {},
-    include: [{
-      model: _model.ServiceArea,
-      as: 'serviceareas'
-    }]
-  }).then(data => {
-    res.json(data);
   }).catch(error => {
     res.status(404).send(error);
   });

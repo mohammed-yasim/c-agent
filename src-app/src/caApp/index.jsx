@@ -8,6 +8,7 @@ import { getToken, removeUserSession, setUserSession } from "./etc/auth";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon, Cog6ToothIcon, DocumentChartBarIcon, MapIcon, QrCodeIcon } from '@heroicons/react/20/solid'
 import Test from "./etc/pages/qr";
+import { PowerIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 const AppContext = createContext();
 
 
@@ -51,6 +52,8 @@ function LoginPage() {
         password: '',
     });
 
+    const [error__state, _error__state_] = useState(null)
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -60,6 +63,7 @@ function LoginPage() {
     };
 
     const handleSubmit = (e) => {
+        _error__state_(null)
         e.preventDefault();
         // Perform authentication logic here (e.g., send data to a server, validate credentials)
         console.log('Form submitted with data:', formData);
@@ -68,7 +72,7 @@ function LoginPage() {
             setUserSession(response.data?.token);
             navigate('/app');
         }).catch(error => {
-
+            _error__state_(`${error?.response?.data}`);
         })
         // // Reset the form after submission
         // setFormData({
@@ -84,6 +88,7 @@ function LoginPage() {
                 <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900">cAgent <span className="text-xs rounded-lg bg-red-500 p-1 text-white font-light">{import.meta.env.VITE_APP_VERSION}</span></h1>
             </div>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                {error__state && <p className="my-3 text-xs text-red-500 text-center">{error__state}</p>}
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -175,6 +180,8 @@ class AppHomeRoutes extends Component {
                         <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
                         <Route path="customers/:service_area/*" element={<>Null</>}></Route>
                         <Route path="qr/:_sid" element={<Test />}></Route>
+                        <Route path="*" element={<Example404 />} />
+
                     </Routes>
                 </div>
                 <p value={JSON.stringify(this.state)} />
@@ -191,14 +198,21 @@ class AppHomeRoutes extends Component {
 function AppHome() {
     let navigate = useNavigate();
     return (<>
-        <div className="p-4">
-            <HomeSelector />
-
+        <div className="flex justify-between px-6 py-4">
             <button onClick={() => {
                 navigate('/logout');
             }}>
-                Logout
+                <PowerIcon className="text-red-500" width={24} />
             </button>
+            <button onClick={() => {
+                navigate('/user_setting ');
+            }}>
+                <UserCircleIcon className="text-red-500" width={24} />
+            </button>
+        </div>
+
+        <div className="px-4">
+            <HomeSelector />
         </div>
     </>)
 }
@@ -233,7 +247,7 @@ function HomeSelector() {
                     }}>
                         <div className="relative mt-1">
                             <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                                <span className="block truncate">{service_area.name} </span>
+                                <span className="block truncate">{service_area?.name} </span>
                                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                     <ChevronUpDownIcon
                                         className="h-5 w-5 text-gray-400"
@@ -387,7 +401,7 @@ function AppLocation({ location, date }) {
                     </div>
                     {service_area.owner_u_id === data.u_id &&
                         <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                            <NavLink to={`locations/${service_area?.s_id}`}>
+                            <NavLink to={`overview/${service_area?.s_id}`}>
                                 <MapIcon />
                                 <h2 className="text-xs">Overview</h2>
                             </NavLink>
@@ -408,7 +422,6 @@ function AppLocation({ location, date }) {
                         </div>
                     }
                 </div>
-                {JSON.stringify(data)}
             </div>
 
         }

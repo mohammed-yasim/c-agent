@@ -2,8 +2,17 @@ import { Router } from "express";
 import { Customer, DayBook, ServiceArea, User } from "./model";
 import * as jwt from 'jsonwebtoken';
 import { infox_sequlize } from "./etc/db";
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 
 const API = Router();
+
+function generateRandomHash() {
+    const randomBytes = crypto.randomBytes(3); // 3 bytes will give you 6 hexadecimal characters
+    const randomHash = randomBytes.toString('HEX').toLowerCase(); // Convert to uppercase for consistency
+    console.log(randomHash)
+    return randomHash;
+}
 
 API.get('/', (r, s) => { s.status(200).json({ status: 'OK' }) });
 
@@ -11,17 +20,55 @@ const secretKey = "ABC_secret";
 
 API.post('/login', (req, res) => {
     const { username, password } = req.body;
-    // Check the username and password (e.g., with bcrypt)
-    // If they are correct, generate a JWT token
-    if (username === 'user@domain.tld' && password === 'password') {
-        let data = {}
-        data['dXNlcg'] = new Buffer.from('8dd9e64e-7e02-11ee-acae-5405dbe7a86c').toString('base64');
-        const token = jwt.sign(data, secretKey, { expiresIn: '24h' });
-        res.json({ token });
-    } else {
-        res.status(401).send('Invalid credentials');
-    }
+
+    User.findOne({
+        where: { email: username, active: 1, suspended: 0 },
+        include: [
+            {
+                model: ServiceArea,
+                through: { attributes: [] },
+                attributes: ['s_id']
+            },
+        ]
+    }).then(
+        (user) => {
+            if (user) {
+                bcrypt.compare(password, user.passwd, (error, match) => {
+                    if (error) {
+                        res.status(406).send(`invalid credentials,${error}`);
+                    } else if (match) {
+                        let data = {}
+                        data['service_areas'] = user?.ServiceAreas?.map((a) => { return a.s_id });
+                        data['dXNlcg'] = new Buffer.from(user.u_id).toString('base64');
+                        data['dXNlcg'] = generateRandomHash() + data.dXNlcg + generateRandomHash();
+                        const token = jwt.sign(data, secretKey, { expiresIn: '24h' });
+                        res.json({ token });
+                    } else {
+                        res.status(406).send('invalid credentials');
+                    }
+                })
+            }
+            else {
+                res.status(406).send('inactive/invalid credentials/suspended');
+            }
+        }
+    ).catch(
+        (err) => {
+            res.status(404).send(`${err}`);
+        }
+    )
 });
+
+API.get('/gen', (req, res) => {
+    bcrypt.hash(req.query?.password, 10, (error, hash) => {
+        if (error) {
+            res.status(500).send(`? ${error}`);
+        }
+        else {
+            res.send(hash)
+        }
+    });
+})
 
 API.use((req, res, next) => {
     let token = req.headers.authorization || false
@@ -32,29 +79,50 @@ API.use((req, res, next) => {
                 res.status(401).send('error');
             } else {
                 // console.log('Decoded JWT Payload:', decoded);
-                req.user_data = decoded;
-                req._uid = Buffer.from(decoded.dXNlcg, 'base64').toString('utf-8');
-                next();
+                req.user_token_data = decoded;
+                let _uid = String(decoded.dXNlcg).slice(6).slice(0, -6);
+                req._uid = Buffer.from(_uid, 'base64').toString('utf-8')
+                User.findOne({
+                    where: {
+                        u_id: req._uid
+                    },
+                    attributes: ['u_id'],
+                    include: [
+                        { model: ServiceArea, as: 'serviceareas', attributes: ['s_id'] }
+                    ]
+                }).then(data => {
+                    if (data) {
+                        req.user_data = data.serviceareas.map((a) => { return a.s_id });
+                        next();
+                    } else {
+                        res.status(401).send('error');
+                    }
+                }).catch(error => {
+                    res.status(406).send(error)
+                })
             }
         });
     } else {
         res.status(401).send('error');
     }
 });
+
 API.use((req, res, next) => {
-    console.log('USER:', req.user_data);
+    console.log('USER:', req.user_token_data, req.user_data);
     next();
 });
 
 API.get('/sync', (req, res) => {
     User.findOne({
         where: {
-        }, include: [
+            u_id: req._uid
+        },
+        attributes: [],
+        include: [
             {
                 model: ServiceArea,
                 through: { attributes: [] },
             },
-            // { model: ServiceArea, as: 'serviceareas' }
         ]
     }).then(data => {
         if (data) {
@@ -63,17 +131,6 @@ API.get('/sync', (req, res) => {
             res.json({})
         }
     }).catch(error => {
-        res.status(404).send(error)
-    })
-});
-
-API.get('/service_areas', (req, res) => {
-    User.findOne({
-        where: {
-        }, include: [
-            { model: ServiceArea, as: 'serviceareas' }
-        ]
-    }).then(data => { res.json(data) }).catch(error => {
         res.status(404).send(error)
     })
 });
@@ -107,7 +164,7 @@ API.get('/fetch/:_sid', (req, res) => {
     const service_area = new Promise((resolve, reject) => {
         ServiceArea.findOne({
             where: {
-                s_id: _sid 
+                s_id: _sid
             }
         })
             .then(data => resolve(data))
@@ -139,7 +196,6 @@ API.get('/income', (req, res) => { });
 API.post('/income', (req, res) => { });
 API.get('/expense', (req, res) => { });
 API.post('/expense', (req, res) => { });
-
 API.use("/*", function (req, res, next) {
     res.status(404).json({ error: 404 });
 })
