@@ -116,7 +116,7 @@ API.get('/sync', (req, res) => {
     User.findOne({
         where: {
             u_id: req._uid
-        },
+        },      
         attributes: [],
         include: [
             {

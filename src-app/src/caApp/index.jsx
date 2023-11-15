@@ -1,4 +1,4 @@
-import React, { Component, createContext, useContext, useEffect, useState, Fragment } from "react";
+import React, { Component, createContext, useContext, useEffect, useState, Fragment, useRef } from "react";
 import { BrowserRouter, NavLink, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { API } from "./etc/api";
 import './etc/style.css';
@@ -234,8 +234,8 @@ function HomeSelector() {
     return (
         <>
 
-            <div className="w-full grid grid-cols-3">
-                <div className="col-span-2">
+            <div className="w-full grid grid-cols-6">
+                <div className="col-span-4">
                     <Listbox value={service_area?.s_id} onChange={(value) => {
                         if (value) {
                             sessionStorage.setItem('service_area', value);
@@ -246,7 +246,7 @@ function HomeSelector() {
                         }
                     }}>
                         <div className="relative mt-1">
-                            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                                 <span className="block truncate">{service_area?.name} </span>
                                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                     <ChevronUpDownIcon
@@ -316,7 +316,7 @@ function HomeSelector() {
                         </div>
                     </Listbox>
                 </div>
-                <div className="">
+                <div className="col-span-2">
                     <input type="date" value={service_date} onChange={(e) => {
                         if (new Date(e.target.value).getTime() >= new Date().getTime()) {
                             return false;
@@ -324,7 +324,10 @@ function HomeSelector() {
                             _service_date_(e.target.value);
                             sessionStorage.setItem('service_date', e.target.value);
                         }
-                    }} className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" />
+                    }}
+                        //     onFocus={(e) => { e.target.type = "date" }}
+                        //     onBlur={(e) => { e.target.type = "text" }}
+                        className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-2 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm" />
                 </div>
             </div>
             <div>
@@ -338,17 +341,31 @@ function HomeSelector() {
 function AppLocation({ location, date }) {
     let service_area = location;
     let [loaded, _loaded_] = useState(false);
+    let [error, _error_] = useState(false);
     let [data, _data_] = useState();
+    const prevProps = useRef();
+
     useEffect(() => {
+        // This block will run after the component has rendered
+        if (prevProps.current) {
+            // Compare old and new props
+            if (prevProps.current.location !== location || prevProps.current.date !== date) {
+                console.log('someProp has changed!');
+                // Perform actions based on the prop change
+                _data_(null);
+                _loaded_(false)
+            }
+        }
+        prevProps.current = { location, date };
         if (service_area && service_area !== '') {
-            API.get(`/fetch/${service_area.s_id}?date=${date}`).then((response) => {
+            API.get(`/fetchs/${service_area.s_id}?date=${date}`).then((response) => {
                 _loaded_(true);
                 _data_(response.data);
-            }).catch(e => { console.log(e) })
+            }).catch(e => { console.log(e);_error_(`${e}`);_loaded_(true)})
         }
     }, [location, date])
     return (<>
-        {loaded && date &&
+        {loaded && date && data &&
             <div>
                 <div className="px-2">
                     {service_area.name} on {date}
@@ -428,5 +445,9 @@ function AppLocation({ location, date }) {
         {
             !loaded && <>Loading..</>
         }
+        {
+            loaded && error && <>{error}</>
+        }
+
     </>)
 }
