@@ -9,6 +9,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon, Cog6ToothIcon, DocumentChartBarIcon, MapIcon, QrCodeIcon } from '@heroicons/react/20/solid'
 import Test from "./etc/pages/qr";
 import { PowerIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { Customers } from "./etc/pages/customers";
 const AppContext = createContext();
 
 
@@ -178,7 +179,7 @@ class AppHomeRoutes extends Component {
                         <Route index element={<AppHome />}></Route>
                         <Route path="collection/:service_area/pending" element={<AppHome />}></Route>
                         <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
-                        <Route path="customers/:service_area/*" element={<>Null</>}></Route>
+                        <Route path="customers/:_sid/*" element={<Customers/>}></Route>
                         <Route path="qr/:_sid" element={<Test />}></Route>
                         <Route path="*" element={<Example404 />} />
 
@@ -249,7 +250,7 @@ function HomeSelector() {
                         }
                     }}>
                         <div className="relative mt-1">
-                            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-xs">
                                 <span className="block truncate">{service_area?.name} </span>
                                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                     <ChevronUpDownIcon
@@ -416,7 +417,7 @@ function AppLocation({ location, date }) {
                             <h2 className="text-xs">Scan QR</h2>
                         </NavLink>
                     </div>
-                    {service_area.owner_u_id === data.u_id &&
+                    {service_area._owner_uid === data.u_id &&
                         <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
                             <NavLink to={`overview/${service_area?.s_id}`}>
                                 <MapIcon />
@@ -430,7 +431,7 @@ function AppLocation({ location, date }) {
                             <h2 className="text-xs">Reports</h2>
                         </NavLink>
                     </div>
-                    {service_area.owner_u_id === data.u_id &&
+                    {service_area._owner_uid === data.u_id &&
                         <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
                             <NavLink to={`setting/${service_area?.s_id}`}>
                                 <Cog6ToothIcon />

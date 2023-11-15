@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Customer, DayBook, ServiceArea, User } from "./model";
+import { Customer, DayBook, Invoice, Receipt, ServiceArea, User } from "./model";
 import * as jwt from 'jsonwebtoken';
 import { infox_sequlize } from "./etc/db";
 import bcrypt from 'bcryptjs'
@@ -10,13 +10,14 @@ const API = Router();
 function generateRandomHash() {
     const randomBytes = crypto.randomBytes(3); // 3 bytes will give you 6 hexadecimal characters
     const randomHash = randomBytes.toString('HEX').toLowerCase(); // Convert to uppercase for consistency
-    console.log(randomHash)
     return randomHash;
 }
 
 API.get('/', (r, s) => { s.status(200).json({ status: 'OK' }) });
 
 const secretKey = "ABC_secret";
+
+// const secretKey = crypto.randomBytes(32).toString('base64');
 
 API.post('/login', (req, res) => {
     const { username, password } = req.body;
@@ -75,7 +76,7 @@ API.use((req, res, next) => {
     if (token) {
         jwt.verify(token, secretKey, (error, decoded) => {
             if (error) {
-                console.error('JWT Verification Error:', error.message);
+                // console.error('JWT Verification Error:', error.message);
                 res.status(401).send('error');
             } else {
                 // console.log('Decoded JWT Payload:', decoded);
@@ -107,16 +108,16 @@ API.use((req, res, next) => {
     }
 });
 
-API.use((req, res, next) => {
-    console.log('USER:', req.user_token_data, req.user_data);
-    next();
-});
+// API.use((req, res, next) => {
+//     console.log('USER:', req.user_token_data, req.user_data);
+//     next();
+// });
 
 API.get('/sync', (req, res) => {
     User.findOne({
         where: {
             u_id: req._uid
-        },      
+        },
         attributes: [],
         include: [
             {
@@ -147,7 +148,7 @@ API.get('/fetch/:_sid', (req, res) => {
             where: {
                 date: new Date(date),
                 _sid: _sid,
-                u_id: req._uid
+                _uid: req._uid
             }
         })
             .then(data => {
@@ -192,6 +193,53 @@ API.get('/fetch/:_sid', (req, res) => {
         .catch(error => { res.status(404).send(error) })
 })
 
+API.get('/customers/:_sid', (req, res) => {
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+        Customer.findAll({
+            where: {
+                _sid: req.params._sid,
+            },
+            include: [
+                {
+                    model: Invoice,
+                    as: 'invoices',
+                    attributes: [
+                        [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('invoices.amount')), 0), 'total'],
+                    ],
+                    where: { deleted: 0 },
+                    required: false,
+                    duplicating: false, // Add this option to avoid duplicating customers when both invoices and receipts are present
+                },
+                {
+                    model: Receipt,
+                    as: 'receipts',
+                    attributes: [
+                        [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('receipts.amount')), 0), 'total'],
+                    ],
+                    where: { deleted: 0 },
+                    required: false,
+                },
+            ],
+            // attributes: ['_cid'], // Add any other attributes you want to select from the Customer model
+            group: ['Customer.c_id'],
+        }).then((data) => {
+            let new_data = data.map((customer) => {
+                return {
+                   ...customer.toJSON(),
+                    invoices: customer.invoices.reduce((sum, invoice) => sum + invoice.dataValues.total, 0),
+                    receipts: customer.receipts.reduce((sum, receipt) => sum + receipt.dataValues.total, 0)
+                };
+            });
+            res.json({
+                customers: new_data
+            })
+        })
+            .catch(error => { res.status(404).send(error) })
+    } else {
+        res.status(200).json({ customers: [] })
+    }
+
+});
 API.get('/income', (req, res) => { });
 API.post('/income', (req, res) => { });
 API.get('/expense', (req, res) => { });

@@ -10,6 +10,10 @@ require("core-js/modules/es.regexp.to-string.js");
 require("core-js/modules/es.promise.js");
 require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/web.url.to-json.js");
+require("core-js/modules/es.array.reduce.js");
 var _express = require("express");
 var _model = require("./model");
 var jwt = _interopRequireWildcard(require("jsonwebtoken"));
@@ -28,7 +32,6 @@ var API = (0, _express.Router)();
 function generateRandomHash() {
   var randomBytes = _crypto.default.randomBytes(3);
   var randomHash = randomBytes.toString('HEX').toLowerCase();
-  console.log(randomHash);
   return randomHash;
 }
 API.get('/', (r, s) => {
@@ -100,7 +103,6 @@ API.use((req, res, next) => {
   if (token) {
     jwt.verify(token, secretKey, (error, decoded) => {
       if (error) {
-        console.error('JWT Verification Error:', error.message);
         res.status(401).send('error');
       } else {
         req.user_token_data = decoded;
@@ -134,10 +136,6 @@ API.use((req, res, next) => {
     res.status(401).send('error');
   }
 });
-API.use((req, res, next) => {
-  console.log('USER:', req.user_token_data, req.user_data);
-  next();
-});
 API.get('/sync', (req, res) => {
   _model.User.findOne({
     where: {
@@ -169,7 +167,7 @@ API.get('/fetch/:_sid', (req, res) => {
       where: {
         date: new Date(date),
         _sid: _sid,
-        u_id: req._uid
+        _uid: req._uid
       }
     }).then(data => {
       var append_data = {
@@ -209,6 +207,51 @@ API.get('/fetch/:_sid', (req, res) => {
   }).catch(error => {
     res.status(404).send(error);
   });
+});
+API.get('/customers/:_sid', (req, res) => {
+  var _req$user_token_data;
+  if (req !== null && req !== void 0 && (_req$user_token_data = req.user_token_data) !== null && _req$user_token_data !== void 0 && _req$user_token_data.service_areas.includes(req.params._sid)) {
+    _model.Customer.findAll({
+      where: {
+        _sid: req.params._sid
+      },
+      include: [{
+        model: _model.Invoice,
+        as: 'invoices',
+        attributes: [[_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('invoices.amount')), 0), 'total']],
+        where: {
+          deleted: 0
+        },
+        required: false,
+        duplicating: false
+      }, {
+        model: _model.Receipt,
+        as: 'receipts',
+        attributes: [[_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('receipts.amount')), 0), 'total']],
+        where: {
+          deleted: 0
+        },
+        required: false
+      }],
+      group: ['Customer.c_id']
+    }).then(data => {
+      var new_data = data.map(customer => {
+        return _objectSpread(_objectSpread({}, customer.toJSON()), {}, {
+          invoices: customer.invoices.reduce((sum, invoice) => sum + invoice.dataValues.total, 0),
+          receipts: customer.receipts.reduce((sum, receipt) => sum + receipt.dataValues.total, 0)
+        });
+      });
+      res.json({
+        customers: new_data
+      });
+    }).catch(error => {
+      res.status(404).send(error);
+    });
+  } else {
+    res.status(200).json({
+      customers: []
+    });
+  }
 });
 API.get('/income', (req, res) => {});
 API.post('/income', (req, res) => {});

@@ -67,7 +67,7 @@ class Activity extends infox_model { }
 
 Customer.init({
 
-    _cid: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_sequlize.UUIDV4, allowNull: false },
+    c_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_sequlize.UUIDV4, allowNull: false },
     reg_no: { type: infox_datatype.STRING, allowNull: false },
     name: { type: infox_datatype.STRING, allowNull: false },
     address: { type: infox_datatype.TEXT, allowNull: false },
@@ -117,8 +117,8 @@ Activity.init({
 }, { sequelize: infox_db });
 
 
-User.hasMany(ServiceArea, { foreignKey: { name: 'owner_u_id', allowNull: false }, as: 'serviceareas' });
-User.hasMany(User, { foreignKey: { name: 'owner_u_id', allowNull: true }, as: 'agents' });
+User.hasMany(ServiceArea, { foreignKey: { name: '_owner_uid', allowNull: false }, as: 'serviceareas' });
+User.hasMany(User, { foreignKey: { name: '_owner_uid', allowNull: true }, as: 'agents' });
 
 
 ServiceArea.hasMany(Customer, { foreignKey: { name: '_sid', allowNull: false }, as: 'customers' });
@@ -132,10 +132,10 @@ ServiceArea.hasMany(Invoice, { foreignKey: { name: '_sid', allowNull: false }, a
 ServiceArea.hasMany(Receipt, { foreignKey: { name: '_sid', allowNull: false }, as: 'receipts' })
 ServiceArea.hasMany(Activity, { foreignKey: { name: '_sid', allowNull: false }, as: 'activities' })
 
-DayBook.belongsTo(User, { foreignKey: { name: 'u_id', allowNull: false }, as: 'day_book' });
-Invoice.belongsTo(User, { foreignKey: { name: 'u_id', allowNull: false }, as: 'invoices' });
-Receipt.belongsTo(User, { foreignKey: { name: 'u_id', allowNull: false }, as: 'receipts' });
-Activity.belongsTo(User, { foreignKey: { name: 'u_id', allowNull: false }, as: 'activities' });
+DayBook.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'day_book' });
+Invoice.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'invoices' });
+Receipt.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'receipts' });
+Activity.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'activities' });
 
 User.belongsToMany(ServiceArea, { through: 'UserServiceArea' });
 ServiceArea.belongsToMany(User, { through: 'UserServiceArea' });

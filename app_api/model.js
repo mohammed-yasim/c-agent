@@ -150,7 +150,7 @@ exports.Receipt = Receipt;
 class Activity extends _db.infox_model {}
 exports.Activity = Activity;
 Customer.init({
-  _cid: {
+  c_id: {
     primaryKey: true,
     type: _db.infox_sequlize.UUID,
     defaultValue: _db.infox_sequlize.UUIDV4,
@@ -293,14 +293,14 @@ Activity.init({
 });
 User.hasMany(ServiceArea, {
   foreignKey: {
-    name: 'owner_u_id',
+    name: '_owner_uid',
     allowNull: false
   },
   as: 'serviceareas'
 });
 User.hasMany(User, {
   foreignKey: {
-    name: 'owner_u_id',
+    name: '_owner_uid',
     allowNull: true
   },
   as: 'agents'
@@ -363,28 +363,28 @@ ServiceArea.hasMany(Activity, {
 });
 DayBook.belongsTo(User, {
   foreignKey: {
-    name: 'u_id',
+    name: '_uid',
     allowNull: false
   },
   as: 'day_book'
 });
 Invoice.belongsTo(User, {
   foreignKey: {
-    name: 'u_id',
+    name: '_uid',
     allowNull: false
   },
   as: 'invoices'
 });
 Receipt.belongsTo(User, {
   foreignKey: {
-    name: 'u_id',
+    name: '_uid',
     allowNull: false
   },
   as: 'receipts'
 });
 Activity.belongsTo(User, {
   foreignKey: {
-    name: 'u_id',
+    name: '_uid',
     allowNull: false
   },
   as: 'activities'
