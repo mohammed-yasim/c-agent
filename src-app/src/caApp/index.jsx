@@ -358,7 +358,7 @@ function AppLocation({ location, date }) {
         }
         prevProps.current = { location, date };
         if (service_area && service_area !== '') {
-            API.get(`/fetchs/${service_area.s_id}?date=${date}`).then((response) => {
+            API.get(`/fetch/${service_area.s_id}?date=${date}`).then((response) => {
                 _loaded_(true);
                 _data_(response.data);
             }).catch(e => { console.log(e);_error_(`${e}`);_loaded_(true)})
