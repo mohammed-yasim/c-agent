@@ -10,6 +10,7 @@ import { CheckIcon, ChevronUpDownIcon, Cog6ToothIcon, DocumentChartBarIcon, MapI
 import Test from "./etc/pages/qr";
 import { PowerIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { Customers } from "./etc/pages/customers";
+import SettingsPage from "./etc/pages/settings";
 const AppContext = createContext();
 
 
@@ -181,6 +182,7 @@ class AppHomeRoutes extends Component {
                         <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
                         <Route path="customers/:_sid/*" element={<Customers/>}></Route>
                         <Route path="qr/:_sid" element={<Test />}></Route>
+                        <Route path="setting/*" element={<SettingsPage />}></Route>
                         <Route path="*" element={<Example404 />} />
 
                     </Routes>
