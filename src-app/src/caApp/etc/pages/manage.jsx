@@ -1,21 +1,22 @@
 // Import necessary React and Tailwind CSS dependencies
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-// Define the SettingsPage component
-const SettingsPage = () => {
+// Define the ManagePage component
+const ManagePage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="bg-blue-500 p-4 text-white text-center">
-        <h1 className="text-2xl font-bold">Settings</h1>
+        <h1 className="text-2xl font-bold">Manage</h1>
       </header>
 
       {/* Main content */}
       <main className="p-4">
-        {/* General Settings */}
+        {/* General Manage */}
         <section className="mb-4">
-          <h2 className="text-lg font-semibold mb-2">General Settings</h2>
-          {/* List of general settings */}
+          <h2 className="text-lg font-semibold mb-2">General Manage</h2>
+          {/* List of general Manage */}
           <ul className="grid grid-cols-1 gap-2">
             <li className="bg-white p-2 rounded-md shadow-md">
               <span className="text-gray-700">Language</span>
@@ -27,33 +28,32 @@ const SettingsPage = () => {
               </select>
             </li>
 
-            {/* Add more general settings here */}
+            {/* Add more general Manage here */}
           </ul>
         </section>
 
-        {/* Account Settings */}
+        {/* Account Manage */}
         <section className="mb-4">
-          <h2 className="text-lg font-semibold mb-2">Account Settings</h2>
-          {/* List of account settings */}
+          <h2 className="text-lg font-semibold mb-2">Cutomers Manager</h2>
+          {/* List of account Manage */}
           <ul className="grid grid-cols-1 gap-2">
             <li className="bg-white p-2 rounded-md shadow-md">
-              <span className="text-gray-700">Change Password</span>
-              {/* Input for new password */}
-              <input
-                type="password"
-                className="block w-full mt-1"
-                placeholder="Enter new password"
-              />
+                <Link to="customers">Customers</Link>
+            </li>
+            <li className="bg-white p-2 rounded-md shadow-md">
+                <Link to="customers">Add New</Link>
+            </li>
+            <li className="bg-white p-2 rounded-md shadow-md">
+                <Link to="customers">Deactivate</Link>
             </li>
 
-            {/* Add more account settings here */}
           </ul>
         </section>
 
-        {/* Theme Settings */}
+        {/* Theme Manage */}
         <section>
-          <h2 className="text-lg font-semibold mb-2">Theme Settings</h2>
-          {/* List of theme settings */}
+          <h2 className="text-lg font-semibold mb-2">Theme Manage</h2>
+          {/* List of theme Manage */}
           <ul className="grid grid-cols-1 gap-2">
             <li className="bg-white p-2 rounded-md shadow-md">
               <span className="text-gray-700">Dark Mode</span>
@@ -64,12 +64,12 @@ const SettingsPage = () => {
               </label>
             </li>
 
-            {/* Add more theme settings here */}
+            {/* Add more theme Manage here */}
           </ul>
         </section>
       </main>
-    </div>
+    </div>  
   );
 };
 
-export default SettingsPage;
+export default ManagePage;
