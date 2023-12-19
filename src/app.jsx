@@ -21,9 +21,11 @@ app.get('/sync', (req, res) => {
     });
 });
 app.get('/test',(req,res)=>{
-    Configuration.findAll((data)=>{
+    Configuration.findAll({where:{q:'e'}}).then((data)=>{
         res.json(data);
-    })
+    }).catch((err)=>{
+        res.send(`${err}`);
+    });
 });
 
 app.use('/', express.static(path.join(__dirname, '/app_vite')));
