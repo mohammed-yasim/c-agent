@@ -21,8 +21,14 @@ app.get('/sync', (req, res) => {
   });
 });
 app.get('/test', (req, res) => {
-  _model.Configuration.findAll(data => {
+  _model.Configuration.findAll({
+    where: {
+      q: 'e'
+    }
+  }).then(data => {
     res.json(data);
+  }).catch(err => {
+    res.status(404).send("".concat(err));
   });
 });
 app.use('/', _express.default.static(_path.default.join(__dirname, '/app_vite')));

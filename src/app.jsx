@@ -24,7 +24,7 @@ app.get('/test',(req,res)=>{
     Configuration.findAll({where:{q:'e'}}).then((data)=>{
         res.json(data);
     }).catch((err)=>{
-        res.send(`${err}`);
+        res.status(404).send(`${err}`);
     });
 });
 
