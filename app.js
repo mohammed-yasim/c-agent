@@ -55,18 +55,18 @@ app.get('/mock', function () {
                 u_profile: {}
               }).then(user => {
                 _model.ServiceArea.create({
-                  name: 'Service Area 1',
+                  name: 'Erattupetta 1',
                   code: 'SA1',
                   place: 'Place 1',
                   lat: '0.000000',
                   lng: '0.000000',
-                  contact_no: '0000000000',
-                  contact_name: 'Contact Name 1',
+                  contact_no: '9947002210',
+                  contact_name: 'Rasaly',
                   _owner_uid: user.u_id
                 }).then(service_area => {
                   user.addServiceArea(service_area);
                   var customer = Array.from({
-                    length: 4
+                    length: 500
                   }, (_, index) => ({
                     name: _faker.faker.person.fullName(),
                     address: _faker.faker.location.streetAddress(),
@@ -84,13 +84,16 @@ app.get('/mock', function () {
                     customers.map((customer, index) => {
                       setTimeout(() => {
                         console.log(new Date().getTime());
-                        var amount = _faker.faker.finance.amount();
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
                         _model.Invoice.create({
                           _type: 'type',
                           _desc: _faker.faker.lorem.sentence(),
                           _no: 0,
                           amount: amount,
-                          date: new Date(),
+                          date: date,
                           _cid: customer.c_id,
                           _sid: service_area.s_id,
                           _uid: user.u_id
@@ -100,7 +103,7 @@ app.get('/mock', function () {
                             _type: 'type',
                             _desc: _faker.faker.lorem.sentence(),
                             amount: amount,
-                            date: new Date(),
+                            date: date,
                             _cid: customer.c_id,
                             _sid: service_area.s_id,
                             _uid: user.u_id,
@@ -108,7 +111,7 @@ app.get('/mock', function () {
                           }).then(receipt => {
                             _model.DayBook.create({
                               referenceNumber: _faker.faker.finance.iban(),
-                              date: new Date(),
+                              date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
                               debitAmount: 0,
                               creditAmount: receipt.amount,
@@ -130,8 +133,10 @@ app.get('/mock', function () {
                                   _type: 'type',
                                   _desc: _faker.faker.lorem.sentence(),
                                   _no: 0,
-                                  amount: _faker.faker.finance.amount(),
-                                  date: new Date(),
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
                                   _cid: customer.c_id,
                                   _sid: service_area.s_id,
                                   _uid: user.u_id
@@ -143,6 +148,468 @@ app.get('/mock', function () {
                           });
                         });
                       }, 500 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 600 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 700 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 800 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 900 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 1000 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 100 * index + 1);
+                      setTimeout(() => {
+                        console.log(new Date().getTime());
+                        var amount = 200;
+                        var date = _faker.faker.date.recent({
+                          days: 10
+                        });
+                        _model.Invoice.create({
+                          _type: 'type',
+                          _desc: _faker.faker.lorem.sentence(),
+                          _no: 0,
+                          amount: amount,
+                          date: date,
+                          _cid: customer.c_id,
+                          _sid: service_area.s_id,
+                          _uid: user.u_id
+                        }).then(invoice => {
+                          _model.Receipt.create({
+                            _no: _faker.faker.finance.iban(),
+                            _type: 'type',
+                            _desc: _faker.faker.lorem.sentence(),
+                            amount: amount,
+                            date: date,
+                            _cid: customer.c_id,
+                            _sid: service_area.s_id,
+                            _uid: user.u_id,
+                            _iid: invoice.i_id
+                          }).then(receipt => {
+                            _model.DayBook.create({
+                              referenceNumber: _faker.faker.finance.iban(),
+                              date: receipt.date,
+                              description: _faker.faker.lorem.sentence(),
+                              debitAmount: 0,
+                              creditAmount: receipt.amount,
+                              accountName: _faker.faker.finance.accountName(),
+                              notes: _faker.faker.lorem.paragraph(),
+                              _cid: customer.c_id,
+                              _sid: service_area.s_id,
+                              _uid: user.u_id
+                            }).then(daybook => {
+                              _model.Invoice.update({
+                                _rid: receipt.r_id
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'type',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
+                                });
+                              }).catch(err => {
+                                console.log(err);
+                              });
+                            });
+                          });
+                        });
+                      }, 1200 * index + 1);
                     });
                   });
                 });

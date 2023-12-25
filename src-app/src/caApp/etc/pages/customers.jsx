@@ -19,12 +19,15 @@ function CustomersTemplate({ data }) {
 
         {/* Action buttons (e.g., call, message) */}
         <div className="flex flex-col gap-1">
-            <p>{data?.invoices} {data?.receipts}</p>
+            {data?.date && <p className="text-center">Due on : <br />{new Date(data?.date).toISOString().slice(0, 10)}</p>}
+            {data.credit !== null && data.debit !== null && <p className="text-center">{data?.credit > data?.debit ? <span className="text-red-500">₹{data?.credit - data?.debit}</span> : <span className="text-green-500">₹{data?.debit - data?.credit}</span>}</p>}
+            <div className="flex flex-row gap-1">
                 <span className="bg-green-500 text-white px-3 py-1 rounded-md">
-                    <PhoneIcon width={24} />
+                    <PhoneIcon width={20} />
                 </span> <span className="bg-green-500 text-white px-3 py-1 rounded-md">
-                    <PaperAirplaneIcon width={24} />
+                    <PaperAirplaneIcon width={20} />
                 </span>
+            </div>
         </div>
     </li>)
 }
@@ -49,9 +52,9 @@ function Customers() {
         );
     });
 
-    return (<div className="min-h-screen bg-gray-100">
+    return (<div className="h-full bg-gray-100 relative">
         {/* Header */}
-        <header className="bg-blue-500 p-4 text-white text-center">
+        <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
             <h1 className="text-2xl font-bold">Customers</h1>
             <input
                 type="text"
@@ -76,7 +79,110 @@ function Customers() {
         </main>
     </div>
     )
-}
+};
+
+function PendingCustomers() {
+    let { _sid } = useParams();
+    let [data, _data_] = useState({});
+    const [service_date, _service_date_] = useState(sessionStorage.getItem('service_date') || new Date().toISOString().slice(0, 10));
+    useEffect(() => {
+        API.get(`/customers-pending/${_sid}?date=${service_date}`).then((response) => {
+            _data_(response.data);
+        })
+    }, [_sid])
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Filter customers based on the search term
+    const filtered_data = data?.customers?.filter((customer) => {
+        // Customize the fields you want to include in the search
+        const searchableFields = ['name', 'address', 'contact_no', 'whatsapp_no', 'email', 'mobile', 'reg_no'];
+        return searchableFields.some((field) =>
+            String(customer[field]).toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    });
+
+    return (<div className="h-full bg-gray-100 relative">
+        {/* Header */}
+        <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+            <h1 className="text-2xl font-bold">Pending : {service_date}</h1>
+            <input
+                type="text"
+                className="p-2 mt-2 w-full border rounded-md text-gray-600"
+                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </header>
+
+        {/* Main content */}
+        <main className="p-4">
+            {/* List of customers */}
+            <ul className="grid grid-cols-1 gap-2">
+
+                {data?.customers && filtered_data?.slice().sort((a, b) => new Date(a.date) - new Date(b.date))?.map((customer, key) => {
+                    return <CustomersTemplate key={key} data={customer} />
+                })}
+            </ul>
+
+
+        </main>
+    </div>
+    )
+};
+
+function CollectionCustomers() {
+    let { _sid } = useParams();
+    let [data, _data_] = useState({});
+    const [service_date, _service_date_] = useState(sessionStorage.getItem('service_date') || new Date().toISOString().slice(0, 10));
+    useEffect(() => {
+        API.get(`/customers-collection/${_sid}?date=${service_date}`).then((response) => {
+            _data_(response.data);
+        })
+    }, [_sid])
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Filter customers based on the search term
+    const filtered_data = data?.customers?.filter((customer) => {
+        // Customize the fields you want to include in the search
+        const searchableFields = ['name', 'address', 'contact_no', 'whatsapp_no', 'email', 'mobile', 'reg_no'];
+        return searchableFields.some((field) =>
+            String(customer[field]).toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    });
+
+    return (<div className="h-full bg-gray-100 relative">
+        {/* Header */}
+        <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+            <h1 className="text-2xl font-bold">Collections : {service_date}</h1>
+            <input
+                type="text"
+                className="p-2 mt-2 w-full border rounded-md text-gray-600"
+                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </header>
+
+        {/* Main content */}
+        <main className="p-4">
+            {/* List of customers */}
+            <ul className="grid grid-cols-1 gap-2">
+
+                {data?.customers && filtered_data?.slice().sort((a, b) => new Date(a.date) - new Date(b.date))?.map((customer, key) => {
+                    return <CustomersTemplate key={key} data={customer} />
+                })}
+            </ul>
+
+
+        </main>
+    </div>
+    )
+};
+
+
+
 
 
 // Function to handle the "Call" action (replace with actual implementation)
@@ -272,6 +378,6 @@ const AddCustomerForm = () => {
 
 
 
-export { Customers, AddCustomerForm }
+export { Customers, AddCustomerForm, PendingCustomers, CollectionCustomers }
 
 

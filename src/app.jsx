@@ -89,22 +89,22 @@ app.get('/mock', async (req, res) => {
 
                         }).then((user) => {
                             ServiceArea.create({
-                                name: 'Service Area 1',
+                                name: 'Erattupetta 1',
                                 code: 'SA1',
                                 place: 'Place 1',
 
                                 lat: '0.000000',
                                 lng: '0.000000',
 
-                                contact_no: '0000000000',
-                                contact_name: 'Contact Name 1',
+                                contact_no: '9947002210',
+                                contact_name: 'Rasaly',
 
                                 _owner_uid: user.u_id
 
                             }).then((service_area) => {
 
                                 user.addServiceArea(service_area);
-                                let customer = Array.from({ length: 4 }, (_, index) => ({
+                                let customer = Array.from({ length: 500 }, (_, index) => ({
                                     name: faker.person.fullName(),
                                     address: faker.location.streetAddress(),
                                     contact_no: faker.number.int({ min: 7000000000, max: 9999999999 }),
@@ -115,14 +115,15 @@ app.get('/mock', async (req, res) => {
                                     customers.map((customer, index) => {
                                         setTimeout(() => {
                                             console.log(new Date().getTime())
-                                            let amount = faker.finance.amount();
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
                                             Invoice.create({
                                                 _type: 'type',
                                                 _desc: faker.lorem.sentence(),
                                                 _no: 0,
 
                                                 amount: amount,
-                                                date: new Date(),
+                                                date: date,
 
 
                                                 _cid: customer.c_id,
@@ -136,7 +137,7 @@ app.get('/mock', async (req, res) => {
                                                     _desc: faker.lorem.sentence(),
 
                                                     amount: amount,
-                                                    date: new Date(),
+                                                    date: date,
 
                                                     _cid: customer.c_id,
                                                     _sid: service_area.s_id,
@@ -146,7 +147,7 @@ app.get('/mock', async (req, res) => {
                                                 }).then((receipt) => {
                                                     DayBook.create({
                                                         referenceNumber: faker.finance.iban(),
-                                                        date: new Date(),
+                                                        date: receipt.date,
                                                         description: faker.lorem.sentence(),
 
                                                         debitAmount: 0,
@@ -170,9 +171,8 @@ app.get('/mock', async (req, res) => {
                                                                 _desc: faker.lorem.sentence(),
                                                                 _no: 0,
 
-                                                                amount: faker.finance.amount(),
-                                                                date: new Date(),
-
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
 
                                                                 _cid: customer.c_id,
                                                                 _sid: service_area.s_id,
@@ -188,6 +188,530 @@ app.get('/mock', async (req, res) => {
 
                                             });
                                         }, 500 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 600 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 700 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 800 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 900 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 1000 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 100 * index + 1);
+                                        setTimeout(() => {
+                                            console.log(new Date().getTime())
+                                            let amount = 200;
+                                            let date = faker.date.recent({ days: 10 })
+                                            Invoice.create({
+                                                _type: 'type',
+                                                _desc: faker.lorem.sentence(),
+                                                _no: 0,
+
+                                                amount: amount,
+                                                date: date,
+
+
+                                                _cid: customer.c_id,
+                                                _sid: service_area.s_id,
+                                                _uid: user.u_id
+
+                                            }).then((invoice) => {
+                                                Receipt.create({
+                                                    _no: faker.finance.iban(),
+                                                    _type: 'type',
+                                                    _desc: faker.lorem.sentence(),
+
+                                                    amount: amount,
+                                                    date: date,
+
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id,
+                                                    _iid: invoice.i_id
+
+                                                }).then((receipt) => {
+                                                    DayBook.create({
+                                                        referenceNumber: faker.finance.iban(),
+                                                        date: receipt.date,
+                                                        description: faker.lorem.sentence(),
+
+                                                        debitAmount: 0,
+                                                        creditAmount: receipt.amount,
+
+                                                        accountName: faker.finance.accountName(),
+
+                                                        notes: faker.lorem.paragraph(),
+
+                                                        _cid: customer.c_id,
+                                                        _sid: service_area.s_id,
+                                                        _uid: user.u_id,
+
+                                                    }).then((daybook) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'type',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
+                                                                _cid: customer.c_id,
+                                                                _sid: service_area.s_id,
+                                                                _uid: user.u_id
+
+                                                            });
+                                                        }).catch((err) => {
+                                                            console.log(err);
+                                                        });
+
+                                                    })
+                                                })
+
+                                            });
+                                        }, 1200 * index + 1);
                                     });
                                 })
                             });

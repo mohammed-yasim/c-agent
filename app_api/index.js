@@ -192,14 +192,19 @@ API.get('/fetch/:_sid', (req, res) => {
   var customers = new Promise((resolve, reject) => {
     _model.Customer.count({
       where: {
-        _sid: _sid
+        _sid: _sid,
+        createdAt: {
+          [_db.infox_op.lte]: new Date(date).setHours(23, 59, 59, 999)
+        }
       }
     }).then(data => resolve(data)).catch(error => reject(error));
   });
   var pending = new Promise((resolve, reject) => {
     _model.Invoice.count({
       where: {
-        date: new Date(date),
+        date: {
+          [_db.infox_op.lte]: new Date(date).setHours(23, 59, 59, 999)
+        },
         _sid: _sid,
         _rid: null,
         deleted: 0
@@ -207,14 +212,12 @@ API.get('/fetch/:_sid', (req, res) => {
     }).then(data => resolve(data)).catch(error => reject(error));
   });
   var colllection = new Promise((resolve, reject) => {
-    _model.Invoice.count({
+    _model.Receipt.count({
       where: {
         date: new Date(date),
         _sid: _sid,
-        deleted: 0,
-        _rid: {
-          [_db.infox_op.not]: null
-        }
+        _uid: req._uid,
+        deleted: 0
       }
     }).then(data => resolve(data)).catch(error => reject(error));
   });
@@ -241,28 +244,27 @@ API.get('/customers/:_sid', (req, res) => {
       },
       include: [{
         model: _model.Invoice,
-        as: 'invoices',
-        attributes: [[_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('invoices.amount')), 0), 'total']],
-        where: {
-          deleted: 0
-        },
-        required: false,
-        duplicating: false
-      }, {
-        model: _model.Receipt,
-        as: 'receipts',
-        attributes: [[_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('receipts.amount')), 0), 'total']],
+        as: 'customer_invoices',
+        attributes: ['amount'],
         where: {
           deleted: 0
         },
         required: false
-      }],
-      group: ['Customer.c_id']
+      }, {
+        model: _model.Receipt,
+        as: 'customer_receipts',
+        attributes: ['amount'],
+        where: {
+          deleted: 0
+        },
+        required: false
+      }]
     }).then(data => {
       var new_data = data.map(customer => {
+        var _customer$customer_in, _customer$customer_re;
         return _objectSpread(_objectSpread({}, customer.toJSON()), {}, {
-          invoices: customer.invoices.reduce((sum, invoice) => sum + invoice.dataValues.total, 0),
-          receipts: customer.receipts.reduce((sum, receipt) => sum + receipt.dataValues.total, 0)
+          credit: customer === null || customer === void 0 || (_customer$customer_in = customer.customer_invoices) === null || _customer$customer_in === void 0 ? void 0 : _customer$customer_in.reduce((sum, invoice) => sum + invoice.dataValues.amount, 0),
+          debit: customer === null || customer === void 0 || (_customer$customer_re = customer.customer_receipts) === null || _customer$customer_re === void 0 ? void 0 : _customer$customer_re.reduce((sum, receipt) => sum + receipt.dataValues.amount, 0)
         });
       });
       res.json({
@@ -270,6 +272,83 @@ API.get('/customers/:_sid', (req, res) => {
       });
     }).catch(error => {
       res.status(404).send(error);
+    });
+  } else {
+    res.status(200).json({
+      customers: []
+    });
+  }
+});
+API.get('/customers-pending/:_sid', (req, res) => {
+  var _req$user_token_data2;
+  var date = req.query.date;
+  var _sid = req.params._sid;
+  if (req !== null && req !== void 0 && (_req$user_token_data2 = req.user_token_data) !== null && _req$user_token_data2 !== void 0 && _req$user_token_data2.service_areas.includes(req.params._sid)) {
+    _model.Invoice.findAll({
+      attributes: ['i_id', 'amount', 'date'],
+      where: {
+        date: {
+          [_db.infox_op.lte]: new Date(date)
+        },
+        _sid: _sid,
+        _rid: null,
+        deleted: 0
+      },
+      include: [{
+        model: _model.Customer,
+        as: 'customer'
+      }],
+      order: [['date', 'ASC']]
+    }).then(data => {
+      var new_data = data.map(invoice => {
+        return _objectSpread(_objectSpread({}, invoice.customer.toJSON()), {}, {
+          credit: null,
+          debit: null,
+          date: invoice.date
+        });
+      });
+      res.json({
+        customers: new_data
+      });
+    }).catch(error => {
+      res.status(404).send("".concat(error));
+    });
+  } else {
+    res.status(200).json({
+      customers: []
+    });
+  }
+});
+API.get('/customers-collection/:_sid', (req, res) => {
+  var _req$user_token_data3;
+  var date = req.query.date;
+  var _sid = req.params._sid;
+  if (req !== null && req !== void 0 && (_req$user_token_data3 = req.user_token_data) !== null && _req$user_token_data3 !== void 0 && _req$user_token_data3.service_areas.includes(req.params._sid)) {
+    _model.Receipt.findAll({
+      attributes: ['r_id', 'amount'],
+      where: {
+        date: {
+          [_db.infox_op.eq]: new Date(date)
+        },
+        _sid: _sid,
+        deleted: 0
+      },
+      include: [{
+        model: _model.Customer,
+        as: 'customer'
+      }]
+    }).then(data => {
+      var new_data = data.map(receipt => {
+        return _objectSpread(_objectSpread({}, receipt.customer.toJSON()), {}, {
+          credit: 0,
+          debit: receipt.amount
+        });
+      });
+      res.json({
+        customers: new_data
+      });
+    }).catch(error => {
+      res.status(404).send("".concat(error));
     });
   } else {
     res.status(200).json({

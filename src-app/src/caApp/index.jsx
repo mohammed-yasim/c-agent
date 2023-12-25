@@ -9,7 +9,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon, Cog6ToothIcon, DocumentChartBarIcon, MapIcon, QrCodeIcon } from '@heroicons/react/20/solid'
 import Test from "./etc/pages/qr";
 import { PowerIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { Customers } from "./etc/pages/customers";
+import { CollectionCustomers, Customers, PendingCustomers } from "./etc/pages/customers";
 import ManagePage from "./etc/pages/manage";
 const AppContext = createContext();
 
@@ -178,9 +178,9 @@ class AppHomeRoutes extends Component {
                 <div className="bg-white min-h-screen select-none">
                     <Routes>
                         <Route index element={<AppHome />}></Route>
-                        <Route path="collection/:service_area/pending" element={<AppHome />}></Route>
-                        <Route path="collection/:service_area/collected" element={<AppHome />}></Route>
-                        <Route path="customers/:_sid/*" element={<Customers/>}></Route>
+                        <Route path="collection/:_sid/pending" element={<PendingCustomers />}></Route>
+                        <Route path="collection/:_sid/collected" element={<CollectionCustomers />}></Route>
+                        <Route path="customers/:_sid/*" element={<Customers />}></Route>
                         <Route path="qr/:_sid" element={<Test />}></Route>
                         <Route path="manage/*" element={<ManagePage />}></Route>
                         <Route path="*" element={<Example404 />} />
@@ -397,7 +397,7 @@ function AppLocation({ location, date }) {
                             <h1 className="text-3xl">{data?.collection || 0}</h1>
                             <h2 className="text-lg"> Collections</h2>
                         </NavLink>
-                    </div>  
+                    </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
                         <NavLink to={`collection/${service_area.s_id}/pending`}>
                             <h1 className="text-3xl">{data?.pending || 0}</h1>

@@ -175,7 +175,8 @@ API.get('/fetch/:_sid', (req, res) => {
     const customers = new Promise((resolve, reject) => {
         Customer.count({
             where: {
-                _sid: _sid
+                _sid: _sid,
+                createdAt: { [infox_op.lte]: new Date(date).setHours(23, 59, 59, 999) },
             }
         }).then(data => resolve(data))
             .catch(error => reject(error));
@@ -183,7 +184,7 @@ API.get('/fetch/:_sid', (req, res) => {
     const pending = new Promise((resolve, reject) => {
         Invoice.count({
             where: {
-                date: new Date(date),
+                date: { [infox_op.lte]: new Date(date).setHours(23, 59, 59, 999) },
                 _sid: _sid,
                 _rid: null,
                 deleted: 0
@@ -192,12 +193,12 @@ API.get('/fetch/:_sid', (req, res) => {
             .catch(error => reject(error));
     });
     const colllection = new Promise((resolve, reject) => {
-        Invoice.count({
+        Receipt.count({
             where: {
                 date: new Date(date),
                 _sid: _sid,
+                _uid: req._uid,
                 deleted: 0,
-                _rid: { [infox_op.not]: null }
             }
         }).then(data => resolve(data))
             .catch(error => reject(error));
@@ -226,32 +227,34 @@ API.get('/customers/:_sid', (req, res) => {
             include: [
                 {
                     model: Invoice,
-                    as: 'invoices',
-                    attributes: [
-                        [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('invoices.amount')), 0), 'total'],
-                    ],
+                    as: 'customer_invoices',
+                    // attributes: [
+                    //     [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('customer_invoices.amount')), 0), 'credit'],
+                    // ],
+                    attributes: ['amount'],
                     where: { deleted: 0 },
                     required: false,
-                    duplicating: false, // Add this option to avoid duplicating customers when both invoices and receipts are present
+                    // duplicating: false, // Add this option to avoid duplicating customers when both invoices and receipts are present
                 },
                 {
                     model: Receipt,
-                    as: 'receipts',
-                    attributes: [
-                        [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('receipts.amount')), 0), 'total'],
-                    ],
+                    as: 'customer_receipts',
+                    // attributes: [
+                    //     [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('customer_receipts.amount')), 0), 'debit'],
+                    // ],
+                    attributes: ['amount'],
                     where: { deleted: 0 },
                     required: false,
                 },
             ],
             // attributes: ['_cid'], // Add any other attributes you want to select from the Customer model
-            group: ['Customer.c_id'],
+            // group: ['Customer.c_id'],
         }).then((data) => {
             let new_data = data.map((customer) => {
                 return {
                     ...customer.toJSON(),
-                    invoices: customer.invoices.reduce((sum, invoice) => sum + invoice.dataValues.total, 0),
-                    receipts: customer.receipts.reduce((sum, receipt) => sum + receipt.dataValues.total, 0)
+                    credit: customer?.customer_invoices?.reduce((sum, invoice) => sum + invoice.dataValues.amount, 0),
+                    debit: customer?.customer_receipts?.reduce((sum, receipt) => sum + receipt.dataValues.amount, 0)
                 };
             });
             res.json({
@@ -264,6 +267,86 @@ API.get('/customers/:_sid', (req, res) => {
     }
 
 });
+
+API.get('/customers-pending/:_sid', (req, res) => {
+    let date = req.query.date
+    let _sid = req.params._sid;
+
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+
+        Invoice.findAll({
+            attributes: ['i_id', 'amount', 'date'],
+            where: {
+                date: { [infox_op.lte]: new Date(date) },
+                _sid: _sid,
+                _rid: null,
+                deleted: 0
+            },
+            include: [
+                {
+                    model: Customer,
+                    as: 'customer',
+                }
+            ],
+           order: [ ['date', 'ASC'] ]
+        }).then((data) => {
+            let new_data = data.map((invoice) => {
+                return {
+                    ...invoice.customer.toJSON(),
+                    credit: null,
+                    debit: null,
+                    date: invoice.date,
+                };
+            });
+            res.json({
+                customers: new_data
+            })
+        })
+            .catch(error => { res.status(404).send(`${error}`) })
+    } else {
+        res.status(200).json({ customers: [] })
+    }
+
+});
+
+API.get('/customers-collection/:_sid', (req, res) => {
+    let date = req.query.date
+    let _sid = req.params._sid;
+
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+
+        Receipt.findAll({
+            attributes: ['r_id', 'amount'],
+            where: {
+                date: { [infox_op.eq]: new Date(date) },
+                _sid: _sid,
+                deleted: 0
+            },
+            include: [
+                {
+                    model: Customer,
+                    as: 'customer',
+                }
+            ]
+        }).then((data) => {
+            let new_data = data.map((receipt) => {
+                return {
+                    ...receipt.customer.toJSON(),
+                    credit: 0,
+                    debit: receipt.amount,
+                };
+            });
+            res.json({
+                customers: new_data
+            })
+        })
+            .catch(error => { res.status(404).send(`${error}`) })
+    } else {
+        res.status(200).json({ customers: [] })
+    }
+
+});
+
 API.get('/income', (req, res) => { });
 API.post('/income', (req, res) => { });
 API.get('/expense', (req, res) => { });

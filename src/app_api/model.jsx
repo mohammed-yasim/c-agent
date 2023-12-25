@@ -7,7 +7,7 @@ Configuration.init({
     key: { type: infox_datatype.STRING, allowNull: true },
     value: { type: infox_datatype.TEXT, allowNull: true },
 
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'configurations' });
 
 
 class User extends infox_model { }
@@ -25,7 +25,7 @@ User.init({
     active: { type: infox_datatype.INTEGER, defaultValue: 1, allowNull: false },
     suspended: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
 
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'users' });
 
 class ServiceArea extends infox_model { }
 
@@ -42,7 +42,7 @@ ServiceArea.init({
     contact_no: { type: infox_datatype.STRING, allowNull: false },
     contact_name: { type: infox_datatype.STRING, allowNull: false },
 
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'service_areas' });
 
 class DayBook extends infox_model { }
 
@@ -84,7 +84,7 @@ Customer.init({
     active: { type: infox_datatype.INTEGER, defaultValue: 1, allowNull: false },
     suspended: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
 
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'customers' });
 Invoice.init({
     i_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
     //-
@@ -99,7 +99,7 @@ Invoice.init({
     //--
     data: { type: infox_datatype.JSON, allowNull: true }
 
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'invoices' });
 
 
 
@@ -122,7 +122,7 @@ Activity.init({
     _desc: { type: infox_datatype.TEXT, allowNull: false },
     //--
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'activities' });
 
 
 User.hasMany(ServiceArea, { foreignKey: { name: '_owner_uid', allowNull: false }, as: 'serviceareas' });
@@ -131,14 +131,18 @@ User.hasMany(User, { foreignKey: { name: '_owner_uid', allowNull: true }, as: 'a
 
 ServiceArea.hasMany(Customer, { foreignKey: { name: '_sid', allowNull: false }, as: 'customers' });
 
-Customer.hasMany(Invoice, { foreignKey: { name: '_cid', allowNull: false }, as: 'invoices' });
-Customer.hasMany(Receipt, { foreignKey: { name: '_cid', allowNull: false }, as: 'receipts' });
-Customer.hasMany(Activity, { foreignKey: { name: '_cid', allowNull: false }, as: 'activities' });
+Customer.hasMany(Invoice, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer_invoices' });
+Customer.hasMany(Receipt, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer_receipts' });
+Customer.hasMany(Activity, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer_activities' });
 
-ServiceArea.hasMany(DayBook, { foreignKey: { name: '_sid', allowNull: false }, as: 'day_book' })
-ServiceArea.hasMany(Invoice, { foreignKey: { name: '_sid', allowNull: false }, as: 'invoices' })
-ServiceArea.hasMany(Receipt, { foreignKey: { name: '_sid', allowNull: false }, as: 'receipts' })
-ServiceArea.hasMany(Activity, { foreignKey: { name: '_sid', allowNull: false }, as: 'activities' })
+Invoice.belongsTo(Customer, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer' });
+Receipt.belongsTo(Customer, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer' });
+Activity.belongsTo(Customer, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer' });
+
+ServiceArea.hasMany(DayBook, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_day_book' })
+ServiceArea.hasMany(Invoice, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_invoices' })
+ServiceArea.hasMany(Receipt, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_receipts' })
+ServiceArea.hasMany(Activity, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_activities' })
 
 Invoice.belongsTo(Receipt, { foreignKey: { name: '_rid', allowNull: true }, as: 'invoice' });
 Receipt.belongsTo(Invoice, { foreignKey: { name: '_iid', allowNull: true }, as: 'receipt' });
@@ -152,35 +156,10 @@ Activity.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: '
 User.belongsToMany(ServiceArea, { through: 'UserServiceArea' });
 ServiceArea.belongsToMany(User, { through: 'UserServiceArea' });
 
-
-class Sequence extends infox_model { }
-
-Sequence.init(
-    {
-        _sid: {
-            type: infox_datatype.STRING,
-            allowNull: false,
-        },
-        _type_: {
-            type: infox_datatype.STRING,
-            allowNull: false,
-        },
-        nextNo: {
-            type: infox_datatype.INTEGER,
-            allowNull: false,
-            defaultValue: 1,
-        },
-    },
-    {
-        sequelize: infox_db,
-    }
-);
-
 export {
     Configuration,
     User,
     ServiceArea,
     DayBook,
     Customer, Invoice, Receipt, Activity,
-    Sequence
 }
