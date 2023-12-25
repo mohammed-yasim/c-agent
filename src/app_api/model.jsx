@@ -44,9 +44,9 @@ ServiceArea.init({
 
 }, { sequelize: infox_db, tableName: 'service_areas' });
 
-class DayBook extends infox_model { }
+class Daybook extends infox_model { }
 
-DayBook.init({
+Daybook.init({
     referenceNumber: { type: infox_datatype.STRING },
     date: { type: infox_datatype.DATEONLY, allowNull: false },
     description: { type: infox_datatype.STRING, allowNull: false },
@@ -55,7 +55,7 @@ DayBook.init({
     accountName: { type: infox_datatype.STRING, allowNull: false },
     notes: { type: infox_datatype.TEXT },
 
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'daybooks' });
 
 class Customer extends infox_model { }
 
@@ -116,7 +116,7 @@ Receipt.init({
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
     //
     data: { type: infox_datatype.JSON, allowNull: true }
-}, { sequelize: infox_db });
+}, { sequelize: infox_db, tableName: 'receipts' });
 Activity.init({
     _type: { type: infox_datatype.STRING, allowNull: false },
     _desc: { type: infox_datatype.TEXT, allowNull: false },
@@ -139,7 +139,7 @@ Invoice.belongsTo(Customer, { foreignKey: { name: '_cid', allowNull: false }, as
 Receipt.belongsTo(Customer, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer' });
 Activity.belongsTo(Customer, { foreignKey: { name: '_cid', allowNull: false }, as: 'customer' });
 
-ServiceArea.hasMany(DayBook, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_day_book' })
+ServiceArea.hasMany(Daybook, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_day_book' })
 ServiceArea.hasMany(Invoice, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_invoices' })
 ServiceArea.hasMany(Receipt, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_receipts' })
 ServiceArea.hasMany(Activity, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_activities' })
@@ -148,7 +148,7 @@ Invoice.belongsTo(Receipt, { foreignKey: { name: '_rid', allowNull: true }, as: 
 Receipt.belongsTo(Invoice, { foreignKey: { name: '_iid', allowNull: true }, as: 'receipt' });
 
 
-DayBook.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'day_book' });
+Daybook.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'day_book' });
 Invoice.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'invoices' });
 Receipt.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'receipts' });
 Activity.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'activities' });
@@ -160,6 +160,6 @@ export {
     Configuration,
     User,
     ServiceArea,
-    DayBook,
+    Daybook,
     Customer, Invoice, Receipt, Activity,
 }

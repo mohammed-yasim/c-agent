@@ -109,7 +109,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -175,7 +175,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -241,7 +241,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -307,7 +307,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -373,7 +373,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -439,7 +439,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -505,7 +505,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),
@@ -571,7 +571,7 @@ app.get('/mock', function () {
                             _uid: user.u_id,
                             _iid: invoice.i_id
                           }).then(receipt => {
-                            _model.DayBook.create({
+                            _model.Daybook.create({
                               referenceNumber: _faker.faker.finance.iban(),
                               date: receipt.date,
                               description: _faker.faker.lorem.sentence(),

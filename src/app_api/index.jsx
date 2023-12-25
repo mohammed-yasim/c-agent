@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Customer, DayBook, Invoice, Receipt, ServiceArea, User } from "./model";
+import { Customer, Daybook, Invoice, Receipt, ServiceArea, User } from "./model";
 import * as jwt from 'jsonwebtoken';
 import { infox_op, infox_sequlize } from "./etc/db";
 import bcrypt from 'bcryptjs'
@@ -140,7 +140,7 @@ API.get('/fetch/:_sid', (req, res) => {
     let _sid = req.params._sid;
     let date = req.query.date
     const balance = new Promise((resolve, reject) => {
-        DayBook.findAndCountAll({
+        Daybook.findAndCountAll({
             attributes: [
                 [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('creditAmount')), 0), 'credit'],
                 [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('debitAmount')), 0), 'debit'],

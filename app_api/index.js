@@ -162,7 +162,7 @@ API.get('/fetch/:_sid', (req, res) => {
   var _sid = req.params._sid;
   var date = req.query.date;
   var balance = new Promise((resolve, reject) => {
-    _model.DayBook.findAndCountAll({
+    _model.Daybook.findAndCountAll({
       attributes: [[_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('creditAmount')), 0), 'credit'], [_db.infox_sequlize.fn('COALESCE', _db.infox_sequlize.fn('SUM', _db.infox_sequlize.col('debitAmount')), 0), 'debit']],
       where: {
         date: new Date(date),

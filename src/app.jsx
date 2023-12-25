@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path'
 import cors from 'cors';
 import { infox_db } from './app_api/etc/db';
-import { Configuration, Customer, DayBook, Invoice, Receipt, ServiceArea, User } from './app_api/model';
+import { Configuration, Customer, Daybook, Invoice, Receipt, ServiceArea, User } from './app_api/model';
 import API from './app_api';
 import bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
@@ -145,7 +145,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -219,7 +219,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -294,7 +294,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -369,7 +369,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -444,7 +444,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -519,7 +519,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -594,7 +594,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),
@@ -669,7 +669,7 @@ app.get('/mock', async (req, res) => {
                                                     _iid: invoice.i_id
 
                                                 }).then((receipt) => {
-                                                    DayBook.create({
+                                                    Daybook.create({
                                                         referenceNumber: faker.finance.iban(),
                                                         date: receipt.date,
                                                         description: faker.lorem.sentence(),

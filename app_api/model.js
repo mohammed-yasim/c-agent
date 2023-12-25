@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.User = exports.ServiceArea = exports.Receipt = exports.Invoice = exports.DayBook = exports.Customer = exports.Configuration = exports.Activity = void 0;
+exports.User = exports.ServiceArea = exports.Receipt = exports.Invoice = exports.Daybook = exports.Customer = exports.Configuration = exports.Activity = void 0;
 var _db = require("./etc/db");
 class Configuration extends _db.infox_model {}
 exports.Configuration = Configuration;
@@ -112,9 +112,9 @@ ServiceArea.init({
   sequelize: _db.infox_db,
   tableName: 'service_areas'
 });
-class DayBook extends _db.infox_model {}
-exports.DayBook = DayBook;
-DayBook.init({
+class Daybook extends _db.infox_model {}
+exports.Daybook = Daybook;
+Daybook.init({
   referenceNumber: {
     type: _db.infox_datatype.STRING
   },
@@ -142,7 +142,8 @@ DayBook.init({
     type: _db.infox_datatype.TEXT
   }
 }, {
-  sequelize: _db.infox_db
+  sequelize: _db.infox_db,
+  tableName: 'daybooks'
 });
 class Customer extends _db.infox_model {}
 exports.Customer = Customer;
@@ -289,7 +290,8 @@ Receipt.init({
     allowNull: true
   }
 }, {
-  sequelize: _db.infox_db
+  sequelize: _db.infox_db,
+  tableName: 'receipts'
 });
 Activity.init({
   _type: {
@@ -372,7 +374,7 @@ Activity.belongsTo(Customer, {
   },
   as: 'customer'
 });
-ServiceArea.hasMany(DayBook, {
+ServiceArea.hasMany(Daybook, {
   foreignKey: {
     name: '_sid',
     allowNull: false
@@ -414,7 +416,7 @@ Receipt.belongsTo(Invoice, {
   },
   as: 'receipt'
 });
-DayBook.belongsTo(User, {
+Daybook.belongsTo(User, {
   foreignKey: {
     name: '_uid',
     allowNull: false
