@@ -234,21 +234,21 @@ function HomeSelector() {
         if (session && session !== '' && session !== null) {
             _service_area_(ServiceAreas.find(a => a.s_id === session));
         } else {
-            _service_area_({ s_id: '', name: 'Choose location/servce area' });
+            _service_area_({ s_id: '', name: 'Choose' });
         }
     }, [])
     return (
         <>
 
-            <div className="w-full grid grid-cols-6 gap-1">
-                <div className="col-span-4">
+            <div className="w-full gap-1 flex items-center justify-between">
+                <div className="flex-1">
                     <Listbox value={service_area?.s_id} onChange={(value) => {
                         if (value) {
                             sessionStorage.setItem('service_area', value);
                             _service_area_(ServiceAreas.find(a => a.s_id === value));
                         } else {
                             sessionStorage.removeItem('service_area')
-                            _service_area_({ s_id: '', name: 'Choose location/servce area' });
+                            _service_area_({ s_id: '', name: 'Choose' });
                         }
                     }}>
                         <div className="relative mt-1">
@@ -322,7 +322,7 @@ function HomeSelector() {
                         </div>
                     </Listbox>
                 </div>
-                <div className="col-span-2">
+                <div className="flex">
                     <input type="date" value={service_date} onChange={(e) => {
                         if (new Date(e.target.value).getTime() >= new Date().getTime()) {
                             return false;
