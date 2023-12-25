@@ -170,7 +170,7 @@ function AllCustomers() {
             <ul className="grid grid-cols-1 gap-2">
 
                 {data?.customers && filtered_data?.map((customer, key) => {
-                    return <CustomersTemplate to={`./../${_sid}/customer/${customer?.c_id}`} key={key} data={customer} />
+                    return <CustomersTemplate to={`./../customer/${customer?.c_id}`} key={key} data={customer} />
                 })}
             </ul>
 

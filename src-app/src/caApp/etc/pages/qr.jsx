@@ -33,7 +33,7 @@ const Test = ({ }) => {
 
                 if (code) {
                     if (isUUIDv4(code.data)) {
-                        navigate(`./../../customers/${_sid}/${code.data}`);
+                        navigate(`./../../${_sid}/customers/${code.data}`);
                     } else {
                         setScannedCode("Invalid QR");
                     }
