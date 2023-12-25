@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.User = exports.ServiceArea = exports.Receipt = exports.Invoice = exports.DayBook = exports.Customer = exports.Configuration = exports.Activity = void 0;
+exports.User = exports.ServiceArea = exports.Sequence = exports.Receipt = exports.Invoice = exports.DayBook = exports.Customer = exports.Configuration = exports.Activity = void 0;
 var _db = require("./etc/db");
 class Configuration extends _db.infox_model {}
 exports.Configuration = Configuration;
@@ -156,10 +156,6 @@ Customer.init({
     defaultValue: _db.infox_sequlize.UUIDV4,
     allowNull: false
   },
-  reg_no: {
-    type: _db.infox_datatype.STRING,
-    allowNull: false
-  },
   name: {
     type: _db.infox_datatype.STRING,
     allowNull: false
@@ -177,6 +173,10 @@ Customer.init({
     allowNull: false
   },
   qr_code: {
+    type: _db.infox_datatype.TEXT,
+    allowNull: true
+  },
+  geo_location: {
     type: _db.infox_datatype.TEXT,
     allowNull: true
   },
@@ -209,9 +209,15 @@ Customer.init({
   sequelize: _db.infox_db
 });
 Invoice.init({
+  i_id: {
+    primaryKey: true,
+    type: _db.infox_sequlize.UUID,
+    defaultValue: _db.infox_datatype.UUIDV4,
+    allowNull: false
+  },
   _no: {
     type: _db.infox_datatype.STRING,
-    allowNull: false
+    allowNull: true
   },
   _type: {
     type: _db.infox_datatype.STRING,
@@ -242,9 +248,15 @@ Invoice.init({
   sequelize: _db.infox_db
 });
 Receipt.init({
+  r_id: {
+    primaryKey: true,
+    type: _db.infox_sequlize.UUID,
+    defaultValue: _db.infox_datatype.UUIDV4,
+    allowNull: false
+  },
   _no: {
     type: _db.infox_datatype.STRING,
-    allowNull: false
+    allowNull: true
   },
   _type: {
     type: _db.infox_datatype.STRING,
@@ -361,6 +373,20 @@ ServiceArea.hasMany(Activity, {
   },
   as: 'activities'
 });
+Invoice.belongsTo(Receipt, {
+  foreignKey: {
+    name: '_rid',
+    allowNull: true
+  },
+  as: 'invoice'
+});
+Receipt.belongsTo(Invoice, {
+  foreignKey: {
+    name: '_iid',
+    allowNull: true
+  },
+  as: 'receipt'
+});
 DayBook.belongsTo(User, {
   foreignKey: {
     name: '_uid',
@@ -394,4 +420,23 @@ User.belongsToMany(ServiceArea, {
 });
 ServiceArea.belongsToMany(User, {
   through: 'UserServiceArea'
+});
+class Sequence extends _db.infox_model {}
+exports.Sequence = Sequence;
+Sequence.init({
+  _sid: {
+    type: _db.infox_datatype.STRING,
+    allowNull: false
+  },
+  _type_: {
+    type: _db.infox_datatype.STRING,
+    allowNull: false
+  },
+  nextNo: {
+    type: _db.infox_datatype.INTEGER,
+    allowNull: false,
+    defaultValue: 1
+  }
+}, {
+  sequelize: _db.infox_db
 });

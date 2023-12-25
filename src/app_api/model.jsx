@@ -68,12 +68,14 @@ class Activity extends infox_model { }
 Customer.init({
 
     c_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_sequlize.UUIDV4, allowNull: false },
-    reg_no: { type: infox_datatype.STRING, allowNull: false },
+    // reg_no: { type: infox_datatype.STRING, allowNull: false },
     name: { type: infox_datatype.STRING, allowNull: false },
     address: { type: infox_datatype.TEXT, allowNull: false },
     contact_no: { type: infox_datatype.STRING, allowNull: false },
     whatsapp_no: { type: infox_datatype.STRING, allowNull: false },
     qr_code: { type: infox_datatype.TEXT, allowNull: true },
+    //--
+    geo_location: { type: infox_datatype.TEXT, allowNull: true },
     //--
     email: { type: infox_datatype.STRING, allowNull: false, defaultValue: "**##**##" },
     mobile: { type: infox_datatype.STRING, allowNull: false, defaultValue: "**##**##" },
@@ -84,8 +86,9 @@ Customer.init({
 
 }, { sequelize: infox_db });
 Invoice.init({
-
-    _no: { type: infox_datatype.STRING, allowNull: false },
+    i_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
+    //-
+    _no: { type: infox_datatype.STRING, allowNull: true },
     _type: { type: infox_datatype.STRING, allowNull: false },
     _desc: { type: infox_datatype.TEXT, allowNull: false },
     //-
@@ -97,8 +100,13 @@ Invoice.init({
     data: { type: infox_datatype.JSON, allowNull: true }
 
 }, { sequelize: infox_db });
+
+
+
 Receipt.init({
-    _no: { type: infox_datatype.STRING, allowNull: false },
+    r_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
+
+    _no: { type: infox_datatype.STRING, allowNull: true },
     _type: { type: infox_datatype.STRING, allowNull: false },
     _desc: { type: infox_datatype.TEXT, allowNull: false },
     //-
@@ -132,6 +140,10 @@ ServiceArea.hasMany(Invoice, { foreignKey: { name: '_sid', allowNull: false }, a
 ServiceArea.hasMany(Receipt, { foreignKey: { name: '_sid', allowNull: false }, as: 'receipts' })
 ServiceArea.hasMany(Activity, { foreignKey: { name: '_sid', allowNull: false }, as: 'activities' })
 
+Invoice.belongsTo(Receipt, { foreignKey: { name: '_rid', allowNull: true }, as: 'invoice' });
+Receipt.belongsTo(Invoice, { foreignKey: { name: '_iid', allowNull: true }, as: 'receipt' });
+
+
 DayBook.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'day_book' });
 Invoice.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'invoices' });
 Receipt.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'receipts' });
@@ -140,10 +152,35 @@ Activity.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: '
 User.belongsToMany(ServiceArea, { through: 'UserServiceArea' });
 ServiceArea.belongsToMany(User, { through: 'UserServiceArea' });
 
+
+class Sequence extends infox_model { }
+
+Sequence.init(
+    {
+        _sid: {
+            type: infox_datatype.STRING,
+            allowNull: false,
+        },
+        _type_: {
+            type: infox_datatype.STRING,
+            allowNull: false,
+        },
+        nextNo: {
+            type: infox_datatype.INTEGER,
+            allowNull: false,
+            defaultValue: 1,
+        },
+    },
+    {
+        sequelize: infox_db,
+    }
+);
+
 export {
     Configuration,
     User,
     ServiceArea,
     DayBook,
-    Customer, Invoice, Receipt, Activity
+    Customer, Invoice, Receipt, Activity,
+    Sequence
 }

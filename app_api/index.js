@@ -196,12 +196,36 @@ API.get('/fetch/:_sid', (req, res) => {
       }
     }).then(data => resolve(data)).catch(error => reject(error));
   });
-  Promise.all([service_area, balance, customers]).then(data => {
+  var pending = new Promise((resolve, reject) => {
+    _model.Invoice.count({
+      where: {
+        date: new Date(date),
+        _sid: _sid,
+        _rid: null,
+        deleted: 0
+      }
+    }).then(data => resolve(data)).catch(error => reject(error));
+  });
+  var colllection = new Promise((resolve, reject) => {
+    _model.Invoice.count({
+      where: {
+        date: new Date(date),
+        _sid: _sid,
+        deleted: 0,
+        _rid: {
+          [_db.infox_op.not]: null
+        }
+      }
+    }).then(data => resolve(data)).catch(error => reject(error));
+  });
+  Promise.all([service_area, balance, customers, pending, colllection]).then(data => {
     res.json({
       date: date,
       service_area: data[0],
       balance: data[1],
       customers: data[2],
+      pending: data[3],
+      collection: data[4],
       u_id: req._uid
     });
   }).catch(error => {

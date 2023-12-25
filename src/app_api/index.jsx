@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Customer, DayBook, Invoice, Receipt, ServiceArea, User } from "./model";
 import * as jwt from 'jsonwebtoken';
-import { infox_sequlize } from "./etc/db";
+import { infox_op, infox_sequlize } from "./etc/db";
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 
@@ -180,13 +180,37 @@ API.get('/fetch/:_sid', (req, res) => {
         }).then(data => resolve(data))
             .catch(error => reject(error));
     })
-    Promise.all([service_area, balance, customers])
+    const pending = new Promise((resolve, reject) => {
+        Invoice.count({
+            where: {
+                date: new Date(date),
+                _sid: _sid,
+                _rid: null,
+                deleted: 0
+            }
+        }).then(data => resolve(data))
+            .catch(error => reject(error));
+    });
+    const colllection = new Promise((resolve, reject) => {
+        Invoice.count({
+            where: {
+                date: new Date(date),
+                _sid: _sid,
+                deleted: 0,
+                _rid: { [infox_op.not]: null }
+            }
+        }).then(data => resolve(data))
+            .catch(error => reject(error));
+    })
+    Promise.all([service_area, balance, customers, pending, colllection])
         .then(data => {
             res.json({
                 date: date,
                 service_area: data[0],
                 balance: data[1],
                 customers: data[2],
+                pending: data[3],
+                collection: data[4],
                 u_id: req._uid
             })
         })
@@ -225,7 +249,7 @@ API.get('/customers/:_sid', (req, res) => {
         }).then((data) => {
             let new_data = data.map((customer) => {
                 return {
-                   ...customer.toJSON(),
+                    ...customer.toJSON(),
                     invoices: customer.invoices.reduce((sum, invoice) => sum + invoice.dataValues.total, 0),
                     receipts: customer.receipts.reduce((sum, receipt) => sum + receipt.dataValues.total, 0)
                 };

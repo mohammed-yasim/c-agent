@@ -375,11 +375,11 @@ function AppLocation({ location, date }) {
             <div className="pt-4">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center content-center">
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                        <h1 className="text-4xl">₹{data?.balance?.credit || '0.00'}</h1>
+                        <h1 className="text-3xl">₹{data?.balance?.credit || '0.00'}</h1>
                         <h2 className="text-lg">Income</h2>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                        <h1 className="text-4xl">₹{data?.balance?.debit || '0.00'}</h1>
+                        <h1 className="text-3xl">₹{data?.balance?.debit || '0.00'}</h1>
                         <h2 className="text-lg">Expense</h2>
                     </div>
                     <div className="col-span-2 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
@@ -387,26 +387,26 @@ function AppLocation({ location, date }) {
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
                         <NavLink to={`customers/${service_area.s_id}/`}>
-                            <h1 className="text-4xl">{data?.customers || 0}</h1>
+                            <h1 className="text-3xl">{data?.customers || 0}</h1>
                             <h2 className="text-lg">Cutomers</h2>
                         </NavLink>
                     </div>
 
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <NavLink to={`customers/${service_area.s_id}/`}>
-                            <h1 className="text-4xl">{data?.collection?.collect || 0}</h1>
+                        <NavLink to={`collection/${service_area.s_id}/collected`}>
+                            <h1 className="text-3xl">{data?.collection || 0}</h1>
                             <h2 className="text-lg"> Collections</h2>
                         </NavLink>
-                    </div>
+                    </div>  
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <NavLink to={`customers/${service_area.s_id}/`}>
-                            <h1 className="text-4xl">{data?.collection?.pending || 0}</h1>
+                        <NavLink to={`collection/${service_area.s_id}/pending`}>
+                            <h1 className="text-3xl">{data?.pending || 0}</h1>
                             <h2 className="text-lg">Pending</h2>
                         </NavLink>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-4">
-                        <NavLink to={`customers/${service_area.s_id}/`}>
-                            <h1 className="text-4xl">{data?.balance.transactions || 0}</h1>
+                        <NavLink to={`transactions/${service_area.s_id}/`}>
+                            <h1 className="text-3xl">{data?.balance.transactions || 0}</h1>
                             <h2 className="text-lg">Transactions</h2>
                         </NavLink>
                     </div>

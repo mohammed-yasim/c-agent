@@ -1,34 +1,30 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { API } from "../api";
-import { PhoneIcon, PhoneXMarkIcon } from "@heroicons/react/20/solid";
+import { PaperAirplaneIcon, PhoneIcon, PhoneXMarkIcon } from "@heroicons/react/20/solid";
 
 function CustomersTemplate({ data }) {
     // console.log(data)
     return (<li
         key={data?.u_id}
-        className="bg-white p-4 rounded-md shadow-md flex items-center justify-between"
+        className="bg-white p-3 rounded-md shadow-md flex items-center justify-between"
     >
         {/* Customer details */}
         <div>
             <h2 className="text-lg font-semibold">{data.name}</h2>
             <p className="text-gray-500">{data?.address}</p>
             <p className="text-gray-500">{data?.contact_no}</p>
-            <p className="text-gray-500">{data?.address}</p>
+            <p className="text-gray-500">{data?.whatsapp_no}</p>
         </div>
 
         {/* Action buttons (e.g., call, message) */}
-        <div className="flex space-x-4">
-            <button
-                className="bg-blue-500 text-white px-3 py-1 rounded-md"
-                onClick={() => handleCall(data?.contact_no)}
-            >
-                <PhoneIcon width={24} />
-            </button>
-            <button
-                className="bg-green-500 text-white px-3 py-1 rounded-md"            >
-                Manage
-            </button>
+        <div className="flex flex-col gap-1">
+            <p>{data?.invoices} {data?.receipts}</p>
+                <span className="bg-green-500 text-white px-3 py-1 rounded-md">
+                    <PhoneIcon width={24} />
+                </span> <span className="bg-green-500 text-white px-3 py-1 rounded-md">
+                    <PaperAirplaneIcon width={24} />
+                </span>
         </div>
     </li>)
 }
