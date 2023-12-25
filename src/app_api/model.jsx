@@ -49,11 +49,11 @@ class Daybook extends infox_model { }
 Daybook.init({
     referenceNumber: { type: infox_datatype.STRING },
     date: { type: infox_datatype.DATEONLY, allowNull: false },
-    description: { type: infox_datatype.STRING, allowNull: false },
+    description: { type: infox_datatype.STRING, allowNull: true },
     debitAmount: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
     creditAmount: { type: infox_datatype.DECIMAL(10, 2), allowNull: false },
-    accountName: { type: infox_datatype.STRING, allowNull: false },
-    notes: { type: infox_datatype.TEXT },
+    accountName: { type: infox_datatype.STRING, allowNull: true },
+    notes: { type: infox_datatype.TEXT, allowNull: true },
 
 }, { sequelize: infox_db, tableName: 'daybooks' });
 
@@ -144,8 +144,8 @@ ServiceArea.hasMany(Invoice, { foreignKey: { name: '_sid', allowNull: false }, a
 ServiceArea.hasMany(Receipt, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_receipts' })
 ServiceArea.hasMany(Activity, { foreignKey: { name: '_sid', allowNull: false }, as: 'service_activities' })
 
-Invoice.belongsTo(Receipt, { foreignKey: { name: '_rid', allowNull: true }, as: 'invoice' });
-Receipt.belongsTo(Invoice, { foreignKey: { name: '_iid', allowNull: true }, as: 'receipt' });
+Invoice.belongsTo(Receipt, { foreignKey: { name: '_rid', allowNull: true }, as: 'receipt' });
+Receipt.belongsTo(Invoice, { foreignKey: { name: '_iid', allowNull: true }, as: 'invoice' });
 
 
 Daybook.belongsTo(User, { foreignKey: { name: '_uid', allowNull: false }, as: 'day_book' });

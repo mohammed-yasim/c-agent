@@ -1,38 +1,137 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { Link, Route, Routes, useParams } from "react-router-dom"
 import { API } from "../api";
 import { PaperAirplaneIcon, PhoneIcon, PhoneXMarkIcon } from "@heroicons/react/20/solid";
 
-function CustomersTemplate({ data }) {
-    // console.log(data)
-    return (<li
-        key={data?.u_id}
-        className="bg-white p-3 rounded-md shadow-md flex items-center justify-between"
-    >
-        {/* Customer details */}
-        <div>
-            <h2 className="text-lg font-semibold">{data.name}</h2>
-            <p className="text-gray-500">{data?.address}</p>
-            <p className="text-gray-500">{data?.contact_no}</p>
-            <p className="text-gray-500">{data?.whatsapp_no}</p>
-        </div>
 
-        {/* Action buttons (e.g., call, message) */}
-        <div className="flex flex-col gap-1">
-            {data?.date && <p className="text-center">Due on : <br />{new Date(data?.date).toISOString().slice(0, 10)}</p>}
-            {data.credit !== null && data.debit !== null && <p className="text-center">{data?.credit > data?.debit ? <span className="text-red-500">₹{data?.credit - data?.debit}</span> : <span className="text-green-500">₹{data?.debit - data?.credit}</span>}</p>}
-            <div className="flex flex-row gap-1">
-                <span className="bg-green-500 text-white px-3 py-1 rounded-md">
-                    <PhoneIcon width={20} />
-                </span> <span className="bg-green-500 text-white px-3 py-1 rounded-md">
-                    <PaperAirplaneIcon width={20} />
-                </span>
+function Customer() {
+    return (
+        <Routes>
+            <Route index element={<ViewCustomer />}></Route>
+        </Routes>
+    )
+}
+
+function ViewCustomer() {
+    let { _sid, _cid } = useParams();
+    let [data, _data_] = useState({})
+    useEffect(() => {
+        API.get(`/customers/${_sid}/${_cid}`).then((response) => {
+            _data_(response.data);
+        })
+    }, [_sid])
+    return (
+        <div className="h-full bg-gray-100 relative">
+            {/* Header */}
+            <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+                <h1 className="text-2xl font-bold">View Customer</h1>
+            </header>
+
+            {/* Main content */}
+            <main className="p-4">
+
+                {data?.c_id && <CustomerInfoComponent customerData={data} />}
+            </main>
+        </div>)
+}
+
+const CustomerInfoComponent = ({ customerData }) => {
+    const {
+        name,
+        address,
+        contact_no,
+        whatsapp_no,
+        email,
+        mobile,
+        customer_invoices,
+        customer_receipts,
+        credit,
+        debit,
+    } = customerData;
+
+    return (
+        <div className="bg-gray-200 p-4 rounded shadow-md">
+            <h2 className="text-2xl font-bold mb-2">{name}</h2>
+            <div className="mb-2">
+                <p className="text-gray-600 mb-1">Address: {address}</p>
+                <p className="text-gray-600 mb-1">Contact No: {contact_no}</p>
+                <p className="text-gray-600 mb-1">WhatsApp No: {whatsapp_no}</p>
+                <p className="text-gray-600 mb-1">Email: {email}</p>
+                <p className="text-gray-600 mb-1">Mobile: {mobile}</p>
+            </div>
+            <div className="mb-4">
+                <p className="text-gray-600 mb-1">Credit: {credit}</p>
+                <p className="text-gray-600 mb-1">Debit: {debit}</p>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Invoices:</h3>
+            <ul>
+                {customer_invoices.map((invoice) => (
+                    <li key={invoice.i_id} className="mb-2">
+                        <p className="text-gray-600 mb-1">Invoice No: {invoice._no}</p>
+                        <p className="text-gray-600 mb-1">Type: {invoice._type}</p>
+                        <p className="text-gray-600 mb-1">Description: {invoice._desc}</p>
+                        <p className="text-gray-600 mb-1">Amount: {invoice.amount}</p>
+                        <p className="text-gray-600 mb-1">Date: {invoice.date}</p>
+                    </li>
+                ))}
+            </ul>
+            <h3 className="text-xl font-bold mb-2">Receipts:</h3>
+            <ul>
+                {customer_receipts.map((receipt) => (
+                    <li key={receipt.i_id} className="mb-2">
+                        <p className="text-gray-600 mb-1">Invoice No: {receipt._no}</p>
+                        <p className="text-gray-600 mb-1">Type: {receipt._type}</p>
+                        <p className="text-gray-600 mb-1">Description: {receipt._desc}</p>
+                        <p className="text-gray-600 mb-1">Amount: {receipt.amount}</p>
+                        <p className="text-gray-600 mb-1">Date: {receipt.date}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+
+
+
+function Customers() {
+    return (<Routes>
+        <Route index element={<AllCustomers />} />
+        <Route path="pendings" element={<PendingCustomers />} />
+        <Route path="collection" element={<CollectionCustomers />} />
+    </Routes>)
+}
+
+function CustomersTemplate({ data, replace = false, to = null }) {
+    // console.log(data)
+    return (<li key={data?.u_id}>
+        <div className="bg-white p-3 rounded-md shadow-md flex items-center justify-between">
+            {/* Customer details */}
+            <Link to={to || ''} replace={!to ? true : replace}>
+                <div>
+                    <h2 className="text-lg font-semibold">{data.name}</h2>
+                    <p className="text-gray-500">{data?.address}</p>
+                    <p className="text-gray-500">{data?.contact_no}</p>
+                    <p className="text-gray-500">{data?.whatsapp_no}</p>
+                </div>
+            </Link>
+            {/* Action buttons (e.g., call, message) */}
+            <div className="flex flex-col gap-1">
+                {data?.date && <p className="text-center">Due on : <br />{new Date(data?.date).toISOString().slice(0, 10)}</p>}
+                {data.credit !== null && data.debit !== null && <p className="text-center">{data?.credit > data?.debit ? <span className="text-red-500">₹{data?.credit - data?.debit}</span> : <span className="text-green-500">₹{data?.debit - data?.credit}</span>}</p>}
+                <div className="flex flex-row gap-1">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-md">
+                        <PhoneIcon width={20} />
+                    </span> <span className="bg-green-500 text-white px-3 py-1 rounded-md">
+                        <PaperAirplaneIcon width={20} />
+                    </span>
+                </div>
             </div>
         </div>
     </li>)
 }
 
-function Customers() {
+function AllCustomers() {
     let { _sid } = useParams();
     let [data, _data_] = useState({})
     useEffect(() => {
@@ -71,7 +170,7 @@ function Customers() {
             <ul className="grid grid-cols-1 gap-2">
 
                 {data?.customers && filtered_data?.map((customer, key) => {
-                    return <CustomersTemplate key={key} data={customer} />
+                    return <CustomersTemplate to={`./../${_sid}/customer/${customer?.c_id}`} key={key} data={customer} />
                 })}
             </ul>
 
@@ -121,7 +220,7 @@ function PendingCustomers() {
             <ul className="grid grid-cols-1 gap-2">
 
                 {data?.customers && filtered_data?.slice().sort((a, b) => new Date(a.date) - new Date(b.date))?.map((customer, key) => {
-                    return <CustomersTemplate key={key} data={customer} />
+                    return <CustomersTemplate to={`./../../customer/${customer?.c_id}`} key={key} data={customer} />
                 })}
             </ul>
 
@@ -171,7 +270,7 @@ function CollectionCustomers() {
             <ul className="grid grid-cols-1 gap-2">
 
                 {data?.customers && filtered_data?.slice().sort((a, b) => new Date(a.date) - new Date(b.date))?.map((customer, key) => {
-                    return <CustomersTemplate key={key} data={customer} />
+                    return <CustomersTemplate key={key} data={customer} to={`./../../customer/${customer?.c_id}`} />
                 })}
             </ul>
 
@@ -378,6 +477,6 @@ const AddCustomerForm = () => {
 
 
 
-export { Customers, AddCustomerForm, PendingCustomers, CollectionCustomers }
+export { Customers, Customer }
 
 

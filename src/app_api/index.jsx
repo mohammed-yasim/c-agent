@@ -177,6 +177,7 @@ API.get('/fetch/:_sid', (req, res) => {
             where: {
                 _sid: _sid,
                 createdAt: { [infox_op.lte]: new Date(date).setHours(23, 59, 59, 999) },
+                active: 1,
             }
         }).then(data => resolve(data))
             .catch(error => reject(error));
@@ -288,7 +289,7 @@ API.get('/customers-pending/:_sid', (req, res) => {
                     as: 'customer',
                 }
             ],
-           order: [ ['date', 'ASC'] ]
+            order: [['date', 'ASC']]
         }).then((data) => {
             let new_data = data.map((invoice) => {
                 return {
@@ -305,6 +306,51 @@ API.get('/customers-pending/:_sid', (req, res) => {
             .catch(error => { res.status(404).send(`${error}`) })
     } else {
         res.status(200).json({ customers: [] })
+    }
+
+});
+
+API.get('/customers/:_sid/:c_id', (req, res) => {
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+        Customer.findOne({
+            where: {
+                _sid: req.params._sid,
+                c_id: req.params.c_id
+            },
+            include: [
+                {
+                    model: Invoice,
+                    as: 'customer_invoices',
+                    // attributes: [
+                    //     [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('customer_invoices.amount')), 0), 'credit'],
+                    // ],
+                    where: { deleted: 0 },
+                    required: false,
+                    // duplicating: false, // Add this option to avoid duplicating customers when both invoices and receipts are present
+                },
+                {
+                    model: Receipt,
+                    as: 'customer_receipts',
+                    // attributes: [
+                    //     [infox_sequlize.fn('COALESCE', infox_sequlize.fn('SUM', infox_sequlize.col('customer_receipts.amount')), 0), 'debit'],
+                    // ],
+                    where: { deleted: 0 },
+                    required: false,
+                },
+            ],
+            // attributes: ['_cid'], // Add any other attributes you want to select from the Customer model
+            // group: ['Customer.c_id'],
+        }).then((customer) => {
+            let new_data = {
+                ...customer.dataValues,
+                credit: customer?.customer_invoices?.reduce((sum, invoice) => sum + invoice.dataValues.amount, 0),
+                debit: customer?.customer_receipts?.reduce((sum, receipt) => sum + receipt.dataValues.amount, 0)
+            };
+            res.json(new_data)
+        })
+            .catch(error => { res.status(404).send(`${error}`) })
+    } else {
+        res.status(200).json({})
     }
 
 });

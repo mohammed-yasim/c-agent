@@ -124,7 +124,7 @@ Daybook.init({
   },
   description: {
     type: _db.infox_datatype.STRING,
-    allowNull: false
+    allowNull: true
   },
   debitAmount: {
     type: _db.infox_datatype.DECIMAL(10, 2),
@@ -136,10 +136,11 @@ Daybook.init({
   },
   accountName: {
     type: _db.infox_datatype.STRING,
-    allowNull: false
+    allowNull: true
   },
   notes: {
-    type: _db.infox_datatype.TEXT
+    type: _db.infox_datatype.TEXT,
+    allowNull: true
   }
 }, {
   sequelize: _db.infox_db,
@@ -407,14 +408,14 @@ Invoice.belongsTo(Receipt, {
     name: '_rid',
     allowNull: true
   },
-  as: 'invoice'
+  as: 'receipt'
 });
 Receipt.belongsTo(Invoice, {
   foreignKey: {
     name: '_iid',
     allowNull: true
   },
-  as: 'receipt'
+  as: 'invoice'
 });
 Daybook.belongsTo(User, {
   foreignKey: {

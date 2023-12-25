@@ -195,7 +195,8 @@ API.get('/fetch/:_sid', (req, res) => {
         _sid: _sid,
         createdAt: {
           [_db.infox_op.lte]: new Date(date).setHours(23, 59, 59, 999)
-        }
+        },
+        active: 1
       }
     }).then(data => resolve(data)).catch(error => reject(error));
   });
@@ -319,11 +320,48 @@ API.get('/customers-pending/:_sid', (req, res) => {
     });
   }
 });
-API.get('/customers-collection/:_sid', (req, res) => {
+API.get('/customers/:_sid/:c_id', (req, res) => {
   var _req$user_token_data3;
+  if (req !== null && req !== void 0 && (_req$user_token_data3 = req.user_token_data) !== null && _req$user_token_data3 !== void 0 && _req$user_token_data3.service_areas.includes(req.params._sid)) {
+    _model.Customer.findOne({
+      where: {
+        _sid: req.params._sid,
+        c_id: req.params.c_id
+      },
+      include: [{
+        model: _model.Invoice,
+        as: 'customer_invoices',
+        where: {
+          deleted: 0
+        },
+        required: false
+      }, {
+        model: _model.Receipt,
+        as: 'customer_receipts',
+        where: {
+          deleted: 0
+        },
+        required: false
+      }]
+    }).then(customer => {
+      var _customer$customer_in2, _customer$customer_re2;
+      var new_data = _objectSpread(_objectSpread({}, customer.dataValues), {}, {
+        credit: customer === null || customer === void 0 || (_customer$customer_in2 = customer.customer_invoices) === null || _customer$customer_in2 === void 0 ? void 0 : _customer$customer_in2.reduce((sum, invoice) => sum + invoice.dataValues.amount, 0),
+        debit: customer === null || customer === void 0 || (_customer$customer_re2 = customer.customer_receipts) === null || _customer$customer_re2 === void 0 ? void 0 : _customer$customer_re2.reduce((sum, receipt) => sum + receipt.dataValues.amount, 0)
+      });
+      res.json(new_data);
+    }).catch(error => {
+      res.status(404).send("".concat(error));
+    });
+  } else {
+    res.status(200).json({});
+  }
+});
+API.get('/customers-collection/:_sid', (req, res) => {
+  var _req$user_token_data4;
   var date = req.query.date;
   var _sid = req.params._sid;
-  if (req !== null && req !== void 0 && (_req$user_token_data3 = req.user_token_data) !== null && _req$user_token_data3 !== void 0 && _req$user_token_data3.service_areas.includes(req.params._sid)) {
+  if (req !== null && req !== void 0 && (_req$user_token_data4 = req.user_token_data) !== null && _req$user_token_data4 !== void 0 && _req$user_token_data4.service_areas.includes(req.params._sid)) {
     _model.Receipt.findAll({
       attributes: ['r_id', 'amount'],
       where: {
