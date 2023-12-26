@@ -124,7 +124,7 @@ const CustomerInfoComponent = ({ customerData }) => {
 
       <div className="w-full max-w-md  py-16 sm:px-0">
         <Tab.Group>
-          <Tab.List className="flex space-x-1 rounded-xl bg-blue-500/20 p-1">
+          <Tab.List className="flex space-x-1 rounded-xl bg-blue-400/20 p-1">
             <Tab
               className={({ selected }) =>
                 classNames(
@@ -132,7 +132,7 @@ const CustomerInfoComponent = ({ customerData }) => {
                   "ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
                   selected
                     ? "bg-white text-blue-700 shadow"
-                    : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                    : "text-blue-700 hover:bg-white/[0.12] "
                 )
               }
             >
@@ -257,7 +257,7 @@ function Customers() {
     <Routes>
       <Route index element={<AllCustomers />} />
       <Route path="add" element={<AddCustomer />}></Route>
-      <Route path="pendings" element={<PendingCustomers />} />
+      <Route path="pending" element={<PendingCustomers />} />
       <Route path="collection" element={<CollectionCustomers />} />
     </Routes>
   );

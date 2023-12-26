@@ -319,8 +319,8 @@ function HomeSelector() {
                 <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
                   <Listbox.Option
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-amber-100 text-amber-900" : "text-gray-900"
+                      `relative cursor-default select-none py-2  ${
+                        active ? "" : "text-gray-900"
                       }`
                     }
                     value={""}
@@ -328,17 +328,17 @@ function HomeSelector() {
                     {({ selected }) => (
                       <>
                         <span
-                          className={`block truncate ${
+                          className={`block truncate pl-3 font-medium text-gray-600 uppercase tracking-widest text-xs ${
                             selected ? "font-medium" : "font-normal"
                           }`}
                         >
-                          Choose
+                          Choose Service area
                         </span>
-                        {selected ? (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                        {/* {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-purple-600">
+                            <CheckIcon className="h-5 w-5 text-purple-600" aria-hidden="true" />
                           </span>
-                        ) : null}
+                        ) : null} */}
                       </>
                     )}
                   </Listbox.Option>
@@ -348,7 +348,7 @@ function HomeSelector() {
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-10 pr-4 ${
                           active
-                            ? "bg-amber-100 text-amber-900"
+                            ? "bg-purple-100 text-purple-900"
                             : "text-gray-900"
                         }`
                       }
@@ -364,7 +364,7 @@ function HomeSelector() {
                             {location.name}
                           </span>
                           {selected ? (
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-purple-600">
                               <CheckIcon
                                 className="h-5 w-5"
                                 aria-hidden="true"
@@ -455,6 +455,7 @@ function HomeSelector() {
 
 
       <div className="bg-white rounded-t-[2rem] overflow-y-auto p-4 h-full">
+        <h2 className="font-bold text-xl my-3">👋 welcome back, yasim.</h2>
         <div className="w-2/5">
           <input
             type="date"
@@ -521,10 +522,10 @@ function AppLocation({ location, date }) {
     <>
       {loaded && date && data && (
         <div className="pt-4 ">
-          <div className="border rounded-lg bg-white drop-shadow-lg ">
-            <div className="bg-gray-100 py-2.5 px-3  flex justify-between">
+          <div className="border rounded-lg bg-white drop-shadow-xl ">
+            <div className="bg-gray-100 py-2.5 px-3  flex items-center justify-between">
               <h6 className="font-semibold text-lg text-gray-800">Day book</h6>
-              <button className="bg-gray-200 border border-gray-300 text-gray-800 px-3 pr-4 py-1 rounded-full flex items-center gap-1 text-xs">
+              <button className="bg-slate-200 border border-gray-100 text-gray-900 px-3 pr-4 py-2 rounded-full flex items-center gap-1 text-xs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -541,7 +542,7 @@ function AppLocation({ location, date }) {
                     d="M12 4.5v15m7.5-7.5h-15"
                   />
                 </svg>
-                New entry
+                <p className="leading-tight"> New entry </p>
               </button>
             </div>
             <div className="p-5">
@@ -594,20 +595,14 @@ function AppLocation({ location, date }) {
             >
                 <div className="flex items-center justify-center p-2  text-green-800 rounded-full">
 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                />
-              </svg>
+              
+
+
+
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
+
                 </div>
               Collection <span>({data?.collection || 0})</span>
             </NavLink>
