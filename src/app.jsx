@@ -167,6 +167,8 @@ app.get('/mock', async (req, res) => {
                                                                 _sid: service_area.s_id,
                                                                 _iid: invoice.i_id,
                                                                 _uid: user.u_id,
+                                                                createdAt: new Date(),
+                                                                updatedAt: new Date()
                                                             }
 
                                                         ).then((receipt) => {

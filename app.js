@@ -109,7 +109,9 @@ app.get('/mock', function () {
                                 _cid: customer.c_id,
                                 _sid: service_area.s_id,
                                 _iid: invoice.i_id,
-                                _uid: user.u_id
+                                _uid: user.u_id,
+                                createdAt: new Date(),
+                                updatedAt: new Date()
                               }).then(receipt => {
                                 _model.Invoice.update({
                                   _rid: receipt.r_id
