@@ -54,46 +54,46 @@ app.get('/mock', async (req, res) => {
         END;
         `).then((data) => {
 
-            infox_db.query(`CREATE TRIGGER before_receipt_insert
-            BEFORE INSERT ON receipts
-            FOR EACH ROW
-            BEGIN
-                DECLARE nextNo INT;
-                -- Find the current next invoice number for the _sid
-                SELECT MAX(_no) INTO nextNo
-                FROM receipts
-                WHERE _sid = NEW._sid
-                LIMIT 1;
-                -- If the _sid doesn't exist in InvoiceSequence, create a new entry
-                IF nextNo IS NULL THEN
-                SET nextNo = 1;
-                ELSE
-                -- Update the next invoice number for the _sid
-                SET nextNo = nextNo + 1;
-                END IF;
-                -- Set the generated invoice number for the new invoice
-                SET NEW._no = LPAD(nextNo, 5, '0');
-                END;
-            `).then((data) => {
-                infox_db.query(`
-                CREATE TRIGGER receipt_after_insert
-                AFTER INSERT ON receipts
-                FOR EACH ROW 
-                BEGIN
-                    INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
-                    VALUES (NEW._no, NEW.date, NEW._desc, 0, NEW.amount, 'INVOICE-RECEIPT', NEW._sid, NEW._uid);
-                END;
-                `).then((data) => {
-                    infox_db.query(`
-                    CREATE TRIGGER receipt_after_delete
-                    AFTER DELETE ON receipts
-                    FOR EACH ROW
-                    BEGIN
-                        INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
-                        VALUES (OLD._no, OLD.date, OLD._desc, OLD.amount, 0, 'INVOICE-RECEIPT-DELETED', OLD._sid, OLD._uid);
-                        UPDATE invoices SET _rid = NULL WHERE i_id = OLD._iid;
-                    END;
-                    `).then((data) => {
+            // infox_db.query(`CREATE TRIGGER before_receipt_insert
+            // BEFORE INSERT ON receipts
+            // FOR EACH ROW
+            // BEGIN
+            //     DECLARE nextNo INT;
+            //     -- Find the current next invoice number for the _sid
+            //     SELECT MAX(_no) INTO nextNo
+            //     FROM receipts
+            //     WHERE _sid = NEW._sid
+            //     LIMIT 1;
+            //     -- If the _sid doesn't exist in InvoiceSequence, create a new entry
+            //     IF nextNo IS NULL THEN
+            //     SET nextNo = 1;
+            //     ELSE
+            //     -- Update the next invoice number for the _sid
+            //     SET nextNo = nextNo + 1;
+            //     END IF;
+            //     -- Set the generated invoice number for the new invoice
+            //     SET NEW._no = LPAD(nextNo, 5, '0');
+            //     END;
+            // `).then((data) => {
+            //     infox_db.query(`
+            //     CREATE TRIGGER receipt_after_insert
+            //     AFTER INSERT ON receipts
+            //     FOR EACH ROW 
+            //     BEGIN
+            //         INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
+            //         VALUES (NEW._no, NEW.date, NEW._desc, 0, NEW.amount, 'INVOICE-RECEIPT', NEW._sid, NEW._uid);
+            //     END;
+            //     `).then((data) => {
+            //         infox_db.query(`
+            //         CREATE TRIGGER receipt_after_delete
+            //         AFTER DELETE ON receipts
+            //         FOR EACH ROW
+            //         BEGIN
+            //             INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
+            //             VALUES (OLD._no, OLD.date, OLD._desc, OLD.amount, 0, 'INVOICE-RECEIPT-DELETED', OLD._sid, OLD._uid);
+            //             UPDATE invoices SET _rid = NULL WHERE i_id = OLD._iid;
+            //         END;
+            //         `).then((data) => {
                         //COMENT_BEGIN
                         bcrypt.hash('password', 10, (error, hash) => {
                             if (error) {
@@ -216,9 +216,9 @@ app.get('/mock', async (req, res) => {
                             }
                         });
                     });
-                });
-            });
-        });
+        //         });
+        //     });
+        // });
     }, (err) => {
         res.send(`${err}`);
     });
