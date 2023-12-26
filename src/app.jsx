@@ -212,7 +212,7 @@ app.get('/mock', async (req, res) => {
 
                                                             // })
                                                         }).catch((err) => {
-                                                            res.send(`${err}`);
+                                                            res.send(`RECEIPT : ${err}`);
                                                             console.log(err);
                                                         });
 

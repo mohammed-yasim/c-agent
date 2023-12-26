@@ -138,7 +138,7 @@ app.get('/mock', function () {
                                   console.log(err);
                                 });
                               }).catch(err => {
-                                res.send("".concat(err));
+                                res.send("RECEIPT : ".concat(err));
                                 console.log(err);
                               });
                             }).catch(err => {
