@@ -185,7 +185,6 @@ class AppHomeRoutes extends Component {
                         <Route path="*" element={<Example404 />} />
 
                     </Routes>
-                    <div className="block p-6 text-xs text-gray-500 text-center dark:text-gray-400"> Version : {import.meta.env.VITE_APP_VERSION}</div>
                 </div>
                 <p value={JSON.stringify(this.state)} />
             </AppContext.Provider>

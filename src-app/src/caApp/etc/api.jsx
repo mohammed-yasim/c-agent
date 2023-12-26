@@ -9,7 +9,7 @@ const API = axios.create({
 API.interceptors.request.use(
     function (config) {
         // Do something before request is sent
-        console.log('Request Interceptor:', config);
+        // console.log('Request Interceptor:', config);
         config['headers']['Authorization'] = getToken();
         return config;
     },
@@ -22,14 +22,14 @@ API.interceptors.request.use(
 API.interceptors.response.use(
     function (response) {
         // Do something with response data
-        console.log('Response Interceptor:', response);
+        // console.log('Response Interceptor:', response);
         return response;
     },
     function (error) {
         // Do something with response error
         if (error.response && error.response.status === 401) {
             // Handle 401 error (e.g., redirect to login page or perform token refresh)
-            console.log('Unauthorized! Redirect to login page or refresh token.');
+            // console.log('Unauthorized! Redirect to login page or refresh token.');
             removeUserSession();
             window.location.reload();
         }

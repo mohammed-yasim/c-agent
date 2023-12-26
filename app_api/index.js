@@ -394,6 +394,80 @@ API.get('/customers-collection/:_sid', (req, res) => {
     });
   }
 });
+API.get('/edit-customer/:_sid/:c_id', (req, res) => {
+  var _req$user_token_data5;
+  if (req !== null && req !== void 0 && (_req$user_token_data5 = req.user_token_data) !== null && _req$user_token_data5 !== void 0 && _req$user_token_data5.service_areas.includes(req.params._sid)) {
+    _model.Customer.findOne({
+      attributes: ['c_id', 'name', 'address', 'contact_no', 'whatsapp_no'],
+      where: {
+        _sid: req.params._sid,
+        c_id: req.params.c_id
+      }
+    }).then(customer => {
+      if (customer) {
+        res.json(customer);
+      }
+    }).catch(err => {
+      res.status(404).send("".concat(err));
+    });
+  }
+});
+API.put('/edit-customer/:_sid/:c_id', (req, res) => {
+  var _req$user_token_data6;
+  var {
+    name,
+    address,
+    contact_no,
+    whatsapp_no
+  } = req.body;
+  if (req !== null && req !== void 0 && (_req$user_token_data6 = req.user_token_data) !== null && _req$user_token_data6 !== void 0 && _req$user_token_data6.service_areas.includes(req.params._sid)) {
+    _model.Customer.update({
+      name: name,
+      address: address,
+      contact_no: contact_no,
+      whatsapp_no: whatsapp_no
+    }, {
+      where: {
+        _sid: req.params._sid,
+        c_id: req.params.c_id
+      }
+    }).then(result => {
+      if (result[0] > 0) {
+        res.json({
+          message: 'Customer updated successfully'
+        });
+      } else {
+        res.status(404).send('Customer not found');
+      }
+    }).catch(err => {
+      res.status(500).send("".concat(err));
+    });
+  }
+});
+API.post('/add-customer/:_sid', (req, res) => {
+  var _req$user_token_data7;
+  var {
+    name,
+    address,
+    contact_no,
+    whatsapp_no
+  } = req.body;
+  if (req !== null && req !== void 0 && (_req$user_token_data7 = req.user_token_data) !== null && _req$user_token_data7 !== void 0 && _req$user_token_data7.service_areas.includes(req.params._sid)) {
+    _model.Customer.create({
+      name: name,
+      address: address,
+      contact_no: contact_no,
+      whatsapp_no: whatsapp_no,
+      _sid: req.params._sid
+    }).then(newCustomer => {
+      res.json(newCustomer);
+    }).catch(err => {
+      res.status(500).send("".concat(err));
+    });
+  } else {
+    res.status(403).send('Unauthorized service area');
+  }
+});
 API.get('/income', (req, res) => {});
 API.post('/income', (req, res) => {});
 API.get('/expense', (req, res) => {});

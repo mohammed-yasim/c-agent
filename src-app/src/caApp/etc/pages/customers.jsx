@@ -1,15 +1,43 @@
 import { useEffect, useState } from "react"
-import { Link, Route, Routes, useParams } from "react-router-dom"
+import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom"
 import { API } from "../api";
-import { PaperAirplaneIcon, PhoneIcon, PhoneXMarkIcon } from "@heroicons/react/20/solid";
+import { PaperAirplaneIcon, PencilSquareIcon, PhoneIcon, PhoneXMarkIcon, PlusCircleIcon, XCircleIcon } from "@heroicons/react/20/solid";
 
 
 function Customer() {
     return (
         <Routes>
             <Route index element={<ViewCustomer />}></Route>
+            <Route path="edit" element={<EditCustomer />}></Route>
+            <Route path="create-bill" element={<CreateBill />}></Route>
+            <Route path="collect-payment" element={<CollectPayment />}></Route>
         </Routes>
     )
+}
+
+function CreateBill() {
+    return (<div className="h-full bg-gray-100 relative">
+        {/* Header */}
+        <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+            <h1 className="text-2xl font-bold flex items-center justify-center gap-3">Create Bill<Link to="./../" replace={true}> <XCircleIcon className="w-6" /> </Link></h1>
+        </header>
+
+        {/* Main content */}
+        <main className="p-4">
+        </main>
+    </div>)
+}
+function CollectPayment() {
+    return (<div className="h-full bg-gray-100 relative">
+        {/* Header */}
+        <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+            <h1 className="text-2xl font-bold flex items-center justify-center gap-3">Collect Payment <Link to="./../" replace={true}> <XCircleIcon className="w-6" /> </Link></h1>
+        </header>
+
+        {/* Main content */}
+        <main className="p-4">
+        </main>
+    </div>)
 }
 
 function ViewCustomer() {
@@ -24,12 +52,15 @@ function ViewCustomer() {
         <div className="h-full bg-gray-100 relative">
             {/* Header */}
             <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
-                <h1 className="text-2xl font-bold">View Customer</h1>
+                <h1 className="text-2xl font-bold flex items-center justify-center gap-3">View Customer <Link to="edit" replace={true}> <PencilSquareIcon className="w-6" /> </Link></h1>
             </header>
 
             {/* Main content */}
             <main className="p-4">
-
+                <div className="flex justify-between pb-4">
+                    <Link to="create-bill">Create Bill</Link>
+                    <Link to="collect-payment">Collect Payment</Link>
+                </div>
                 {data?.c_id && <CustomerInfoComponent customerData={data} />}
             </main>
         </div>)
@@ -92,17 +123,60 @@ const CustomerInfoComponent = ({ customerData }) => {
 };
 
 
+function EditCustomer() {
+    let { _sid, _cid } = useParams();
+    let [data, _data_] = useState({})
+    let navigate = useNavigate();
+    useEffect(() => {
+        API.get(`/edit-customer/${_sid}/${_cid}`).then((response) => {
+            _data_(response.data);
+        })
+    }, [_sid])
+    const submitForm = (formData) => {
+        API.put(`/edit-customer/${_sid}/${_cid}`, formData).then((response) => {
+            console.log(response.data)
+            navigate(`./../`, { replace: true })
+        })
+    }
+    return (
+        <div className="h-full bg-gray-100 relative">
+
+            {/* Header */}
+            <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+                <h1 className="text-2xl font-bold flex items-center justify-center gap-3">Edit Customer <Link to="./../" replace={true}> <XCircleIcon className="w-6" /> </Link></h1>
+            </header>
+
+            {/* Main content */}
+            <main className="p-4">
+                {data?.c_id && <AddCustomerForm edit={true} data={data} submitForm={submitForm} />}
+            </main>
+        </div>)
+}
 
 
 function Customers() {
     return (<Routes>
         <Route index element={<AllCustomers />} />
+        <Route path="add" element={<AddCustomer />}></Route>
         <Route path="pendings" element={<PendingCustomers />} />
         <Route path="collection" element={<CollectionCustomers />} />
     </Routes>)
 }
 
-function CustomersTemplate({ data, replace = false, to = null }) {
+
+// Function to handle the "Call" action (replace with actual implementation)
+const handleCall = (phoneNumber) => {
+    console.log(`Calling ${phoneNumber}`);
+    window.open(`tel:${phoneNumber}`, '_self');
+};
+
+// Function to handle the "Message" action (replace with actual implementation)
+const handleMessage = (phoneNumber, message) => {
+    console.log(`Sending message to ${phoneNumber}`);
+    alert(`currently not available`);
+};
+
+function CustomersTemplate({ data, replace = false, to = null, message = `` }) {
     // console.log(data)
     return (<li key={data?.u_id}>
         <div className="bg-white p-3 rounded-md shadow-md flex items-center justify-between">
@@ -121,9 +195,9 @@ function CustomersTemplate({ data, replace = false, to = null }) {
                 {data.credit !== null && data.debit !== null && <p className="text-center">{data?.credit > data?.debit ? <span className="text-red-500">₹{data?.credit - data?.debit}</span> : <span className="text-green-500">₹{data?.debit - data?.credit}</span>}</p>}
                 <div className="flex flex-row gap-1">
                     <span className="bg-green-500 text-white px-3 py-1 rounded-md">
-                        <PhoneIcon width={20} />
+                        <PhoneIcon width={20} onClick={() => { handleCall(data?.contact_no) }} />
                     </span> <span className="bg-green-500 text-white px-3 py-1 rounded-md">
-                        <PaperAirplaneIcon width={20} />
+                        <PaperAirplaneIcon onClick={() => { handleMessage(data?.whatsapp_no, message) }} width={20} />
                     </span>
                 </div>
             </div>
@@ -155,13 +229,16 @@ function AllCustomers() {
         {/* Header */}
         <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
             <h1 className="text-2xl font-bold">Customers</h1>
-            <input
-                type="text"
-                className="p-2 mt-2 w-full border rounded-md text-gray-600"
-                placeholder="Search customers..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="flex flex-row items-center justify-center">
+                <input
+                    type="text"
+                    className="p-2 mt-2 w-full border rounded-md text-gray-600"
+                    placeholder="Search customers..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Link className="pl-2" to="add"><PlusCircleIcon width={32} /> </Link>
+            </div>
         </header>
 
         {/* Main content */}
@@ -280,38 +357,15 @@ function CollectionCustomers() {
     )
 };
 
-
-
-
-
-// Function to handle the "Call" action (replace with actual implementation)
-const handleCall = (phoneNumber) => {
-    console.log(`Calling ${phoneNumber}`);
-};
-
-// Function to handle the "Message" action (replace with actual implementation)
-const handleMessage = (phoneNumber) => {
-    console.log(`Sending message to ${phoneNumber}`);
-};
-
-const AddCustomerForm = () => {
-    const [formData, setFormData] = useState({
-        c_id: '', // Generate UUIDv4 on the server or use a library
-        reg_no: '',
-        name: '',
-        address: '',
-        contact_no: '',
-        whatsapp_no: '',
-        qr_code: null,
-        email: '',
-        mobile: '',
-        password: '',
-        active: '1',
-        suspended: '0',
-        createdAt: '',
-        updatedAt: '',
-        _sid: 'd52e0836-83e1-11ee-8bce-5405dbe7a86c',
-    });
+const AddCustomerForm = ({ edit = false, data = {
+    name: '',
+    address: '',
+    contact_no: '',
+    whatsapp_no: '',
+},
+    submitForm = (formData) => { console.log(formData) }
+}) => {
+    const [formData, setFormData] = useState(data);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -320,14 +374,11 @@ const AddCustomerForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your logic to handle the form submission (e.g., API call, state update)
-        console.log('Form submitted with data:', formData);
-        // You might want to reset the form or navigate to another page after submission
+        submitForm(formData)
     };
 
     return (
         <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-md shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Add Customer</h2>
             <form onSubmit={handleSubmit}>
                 {/* Name */}
                 <div className="mb-4">
@@ -389,92 +440,40 @@ const AddCustomerForm = () => {
                         className="w-full p-2 border rounded-md"
                     />
                 </div>
-
-                {/* Email */}
-                <div className="mb-4">
-                    <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                    />
-                </div>
-
-                {/* Mobile */}
-                <div className="mb-4">
-                    <label htmlFor="mobile" className="block text-gray-700 font-semibold mb-2">
-                        Mobile
-                    </label>
-                    <input
-                        type="tel"
-                        id="mobile"
-                        name="mobile"
-                        value={formData.mobile}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                    />
-                </div>
-
-                {/* Password */}
-                <div className="mb-4">
-                    <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
-                        Password
-                    </label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded-md"
-                    />
-                </div>
-
-                {/* Active and Suspended */}
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-semibold mb-2">Status</label>
-                    <div className="flex">
-                        <label className="mr-4">
-                            <input
-                                type="radio"
-                                name="active"
-                                value="1"
-                                checked={formData.active === '1'}
-                                onChange={handleChange}
-                            />
-                            <span className="ml-2">Active</span>
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="suspended"
-                                value="1"
-                                checked={formData.suspended === '1'}
-                                onChange={handleChange}
-                            />
-                            <span className="ml-2">Suspended</span>
-                        </label>
-                    </div>
-                </div>
-
                 {/* Submit button */}
                 <button
                     type="submit"
                     className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                 >
-                    Add Customer
+                    {edit ? "Save" : "Add"}
                 </button>
             </form>
         </div>
     );
 };
 
-
+function AddCustomer() {
+    let { _sid } = useParams();
+    let navigate = useNavigate();
+    const submitForm = (formData) => {
+        API.post(`/add-customer/${_sid}`, formData).then((response) => {
+            console.log(response.data)
+            navigate(`./../../customer/${response.data?.c_id}`, { replace: true })
+        })
+    }
+    return (
+        <div className="h-full bg-gray-100 relative">
+            {/* Header */}
+            <header className="bg-blue-500 p-4 text-white text-center sticky top-0">
+                <h1 className="text-2xl font-bold">Add New Customer</h1>
+            </header>
+            {/* Main content */}
+            <main className="p-4">
+                <AddCustomerForm edit={false} submitForm={submitForm} />
+            </main>
+        </div>
+    )
+}
 
 
 export { Customers, Customer }

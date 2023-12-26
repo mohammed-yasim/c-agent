@@ -393,6 +393,72 @@ API.get('/customers-collection/:_sid', (req, res) => {
 
 });
 
+API.get('/edit-customer/:_sid/:c_id', (req, res) => {
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+        Customer.findOne({
+            attributes: ['c_id', 'name', 'address', 'contact_no', 'whatsapp_no'],
+            where: {
+                _sid: req.params._sid,
+                c_id: req.params.c_id,
+            },
+        }).then((customer) => {
+            if (customer) {
+                res.json(customer)
+            }
+        }).catch(err => {
+            res.status(404).send(`${err}`)
+        })
+    }
+});
+API.put('/edit-customer/:_sid/:c_id', (req, res) => {
+    let { name, address, contact_no, whatsapp_no } = req.body;
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+        Customer.update(
+            {
+                name: name,
+                address: address,
+                contact_no: contact_no,
+                whatsapp_no: whatsapp_no,
+
+            }, // assuming the updated data is sent in the request body
+            {
+                where: {
+                    _sid: req.params._sid,
+                    c_id: req.params.c_id,
+                },
+            }
+        ).then((result) => {
+            if (result[0] > 0) { // if any row was affected
+                res.json({ message: 'Customer updated successfully' })
+            } else {
+                res.status(404).send('Customer not found')
+            }
+        }).catch(err => {
+            res.status(500).send(`${err}`)
+        })
+    }
+});
+
+API.post('/add-customer/:_sid', (req, res) => {
+    let { name, address, contact_no, whatsapp_no } = req.body;
+
+    if (req?.user_token_data?.service_areas.includes(req.params._sid)) {
+        Customer.create({
+            name: name,
+            address: address,
+            contact_no: contact_no,
+            whatsapp_no: whatsapp_no,
+            _sid: req.params._sid,
+        }).then((newCustomer) => {
+            res.json(newCustomer)
+        }).catch(err => {
+            res.status(500).send(`${err}`)
+        })
+    } else {
+        res.status(403).send('Unauthorized service area')
+    }
+});
+
 API.get('/income', (req, res) => { });
 API.post('/income', (req, res) => { });
 API.get('/expense', (req, res) => { });
