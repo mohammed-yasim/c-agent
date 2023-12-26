@@ -101,7 +101,7 @@ app.get('/mock', function () {
                               _uid: user.u_id
                             }).then(invoice => {
                               _model.Receipt.create({
-                                _no: 0,
+                                _no: '0',
                                 _type: "BILLS",
                                 _desc: "THIS IS A TEST RECEIPT",
                                 amount: amount,
