@@ -85,6 +85,7 @@ Customer.init({
     suspended: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
 
 }, { sequelize: infox_db, tableName: 'customers' });
+
 Invoice.init({
     i_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
     //-
@@ -117,13 +118,13 @@ Receipt.init({
     //
     data: { type: infox_datatype.JSON, allowNull: true }
 }, { sequelize: infox_db, tableName: 'receipts' });
+
 Activity.init({
     _type: { type: infox_datatype.STRING, allowNull: false },
     _desc: { type: infox_datatype.TEXT, allowNull: false },
     //--
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
 }, { sequelize: infox_db, tableName: 'activities' });
-
 
 User.hasMany(ServiceArea, { foreignKey: { name: '_owner_uid', allowNull: false }, as: 'serviceareas' });
 User.hasMany(User, { foreignKey: { name: '_owner_uid', allowNull: true }, as: 'agents' });

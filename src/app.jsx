@@ -125,6 +125,7 @@ app.get('/mock', async (req, res) => {
                                     }).then((service_area) => {
 
                                         user.addServiceArea(service_area);
+
                                         let customer = Array.from({ length: 5 }, (_, index) => ({
                                             name: faker.person.fullName(),
                                             address: faker.location.streetAddress(),
@@ -153,6 +154,7 @@ app.get('/mock', async (req, res) => {
                                                         _uid: user.u_id
 
                                                     }).then((invoice) => {
+
                                                         Receipt.create({
                                                             _no: faker.finance.iban(),
                                                             _type: 'type',
@@ -201,27 +203,36 @@ app.get('/mock', async (req, res) => {
 
                                                                 });
                                                             }).catch((err) => {
+                                                                res.send(`${err}`);
                                                                 console.log(err);
                                                             });
 
                                                             // })
-                                                        })
+                                                        }).catch((err) => {
+                                                            res.send(`${err}`);
+                                                            console.log(err);
+                                                        });
 
+                                                    }).catch((err) => {
+                                                        res.send(`${err}`);
+                                                        console.log(err);
                                                     });
                                                 }, 500 * index + 1);
+
+                                                if (customers.length - 1 == index) {
+                                                   setTimeout(()=>{res.send('Synced - event ')}, 510 * index + 1);
+                                                }
                                                 //LOOP
                                             });
                                         })
                                     });
                                 });
-
                             }
                         });
                     });
                 });
             });
         });
-        res.send('Synced');
     }, (err) => {
         res.send(`${err}`);
     });

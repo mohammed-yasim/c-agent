@@ -132,11 +132,23 @@ app.get('/mock', function () {
                                     _uid: user.u_id
                                   });
                                 }).catch(err => {
+                                  res.send("".concat(err));
                                   console.log(err);
                                 });
+                              }).catch(err => {
+                                res.send("".concat(err));
+                                console.log(err);
                               });
+                            }).catch(err => {
+                              res.send("".concat(err));
+                              console.log(err);
                             });
                           }, 500 * index + 1);
+                          if (customers.length - 1 == index) {
+                            setTimeout(() => {
+                              res.send('Synced - event ');
+                            }, 510 * index + 1);
+                          }
                         });
                       });
                     });
@@ -147,7 +159,6 @@ app.get('/mock', function () {
           });
         });
       });
-      res.send('Synced');
     }, err => {
       res.send("".concat(err));
     });
