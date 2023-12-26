@@ -271,7 +271,7 @@ Receipt.init({
   },
   _desc: {
     type: _db.infox_datatype.TEXT,
-    allowNull: false
+    allowNull: true
   },
   amount: {
     type: _db.infox_datatype.DECIMAL,
@@ -292,7 +292,8 @@ Receipt.init({
   }
 }, {
   sequelize: _db.infox_db,
-  tableName: 'receipts'
+  tableName: 'receipts',
+  timestamps: false
 });
 Activity.init({
   _type: {

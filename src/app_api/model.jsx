@@ -107,7 +107,7 @@ Invoice.init({
 Receipt.init({
 
     r_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
-    
+
     _no: { type: infox_datatype.STRING, allowNull: true },
     _type: { type: infox_datatype.STRING, allowNull: false },
     _desc: { type: infox_datatype.TEXT, allowNull: true },
@@ -118,7 +118,10 @@ Receipt.init({
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
     //
     data: { type: infox_datatype.JSON, allowNull: true }
-}, { sequelize: infox_db, tableName: 'receipts' });
+
+
+
+}, { sequelize: infox_db, tableName: 'receipts', timestamps: false });
 
 Activity.init({
     _type: { type: infox_datatype.STRING, allowNull: false },
