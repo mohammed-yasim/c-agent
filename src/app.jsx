@@ -158,7 +158,7 @@ app.get('/mock', async (req, res) => {
                                                         Receipt.create({
                                                             _no: 0,
                                                             _type: "BILLS",
-                                                            _desc: "",
+                                                            _desc: "THIS IS A TEST RECEIPT",
                                                             amount: amount,
                                                             date: date,
                                                             _cid: customer.c_id,
