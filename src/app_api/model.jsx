@@ -113,7 +113,7 @@ Receipt.init({
     _desc: { type: infox_datatype.TEXT, allowNull: true },
     //-
     amount: { type: infox_datatype.DECIMAL, allowNull: false },
-    date: { type: infox_datatype.DATEONLY, allowNull: false },
+    date: { type: infox_datatype.DATEONLY, allowNull: true },
     //--
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
     //

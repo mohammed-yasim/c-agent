@@ -279,7 +279,7 @@ Receipt.init({
   },
   date: {
     type: _db.infox_datatype.DATEONLY,
-    allowNull: false
+    allowNull: true
   },
   deleted: {
     type: _db.infox_datatype.INTEGER,

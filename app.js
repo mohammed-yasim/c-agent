@@ -105,7 +105,6 @@ app.get('/mock', function () {
                                 _type: 'BILL-RECEIPT',
                                 _desc: '',
                                 amount: amount,
-                                date: new Date(),
                                 _cid: customer.c_id,
                                 _sid: service_area.s_id,
                                 _iid: invoice.i_id,

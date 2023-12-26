@@ -161,7 +161,7 @@ app.get('/mock', async (req, res) => {
                                                             _desc: '',
 
                                                             amount: amount,
-                                                            date: new Date(),
+                                                            // date: new Date(),
 
                                                             _cid: customer.c_id,
                                                             _sid: service_area.s_id,
@@ -169,6 +169,7 @@ app.get('/mock', async (req, res) => {
                                                             _uid: user.u_id,
 
                                                         }).then((receipt) => {
+                    
                                                             // Daybook.create({
                                                             //     referenceNumber: faker.finance.iban(),
                                                             //     date: receipt.date,
