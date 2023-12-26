@@ -75,149 +75,149 @@ app.get('/mock', async (req, res) => {
                 SET NEW._no = LPAD(nextNo, 5, '0');
                 END;
             `).then((data) => {
-            //     infox_db.query(`
-            //     CREATE TRIGGER receipt_after_insert
-            //     AFTER INSERT ON receipts
-            //     FOR EACH ROW 
-            //     BEGIN
-            //         INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
-            //         VALUES (NEW._no, NEW.date, NEW._desc, 0, NEW.amount, 'INVOICE-RECEIPT', NEW._sid, NEW._uid);
-            //     END;
-            //     `).then((data) => {
-            //         infox_db.query(`
-            //         CREATE TRIGGER receipt_after_delete
-            //         AFTER DELETE ON receipts
-            //         FOR EACH ROW
-            //         BEGIN
-            //             INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
-            //             VALUES (OLD._no, OLD.date, OLD._desc, OLD.amount, 0, 'INVOICE-RECEIPT-DELETED', OLD._sid, OLD._uid);
-            //             UPDATE invoices SET _rid = NULL WHERE i_id = OLD._iid;
-            //         END;
-            //         `).then((data) => {
-                        //COMENT_BEGIN
-                        bcrypt.hash('password', 10, (error, hash) => {
-                            if (error) {
-                                res.status(500).send(`? ${error}`);
-                            }
-                            else {
-                                User.create({
-                                    email: 'user@domain.tld',
-                                    passwd: hash,
+                infox_db.query(`
+                CREATE TRIGGER receipt_after_insert
+                AFTER INSERT ON receipts
+                FOR EACH ROW 
+                BEGIN
+                    INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
+                    VALUES (NEW._no, NEW.date, NEW._desc, 0, NEW.amount, 'INVOICE-RECEIPT', NEW._sid, NEW._uid);
+                END;
+                `).then((data) => {
+                    //         infox_db.query(`
+                    //         CREATE TRIGGER receipt_after_delete
+                    //         AFTER DELETE ON receipts
+                    //         FOR EACH ROW
+                    //         BEGIN
+                    //             INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
+                    //             VALUES (OLD._no, OLD.date, OLD._desc, OLD.amount, 0, 'INVOICE-RECEIPT-DELETED', OLD._sid, OLD._uid);
+                    //             UPDATE invoices SET _rid = NULL WHERE i_id = OLD._iid;
+                    //         END;
+                    //         `).then((data) => {
+                    //COMENT_BEGIN
+                    bcrypt.hash('password', 10, (error, hash) => {
+                        if (error) {
+                            res.status(500).send(`? ${error}`);
+                        }
+                        else {
+                            User.create({
+                                email: 'user@domain.tld',
+                                passwd: hash,
 
-                                    u_name: 'User Name',
-                                    u_mob: '0000000000',
-                                    u_profile: {},
+                                u_name: 'User Name',
+                                u_mob: '0000000000',
+                                u_profile: {},
 
-                                }).then((user) => {
-                                    ServiceArea.create({
-                                        name: 'Erattupetta 1',
-                                        code: 'SA1',
-                                        place: 'Place 1',
+                            }).then((user) => {
+                                ServiceArea.create({
+                                    name: 'Erattupetta 1',
+                                    code: 'SA1',
+                                    place: 'Place 1',
 
-                                        lat: '0.000000',
-                                        lng: '0.000000',
+                                    lat: '0.000000',
+                                    lng: '0.000000',
 
-                                        contact_no: '9947002210',
-                                        contact_name: 'Rasaly',
+                                    contact_no: '9947002210',
+                                    contact_name: 'Rasaly',
 
-                                        _owner_uid: user.u_id
+                                    _owner_uid: user.u_id
 
-                                    }).then((service_area) => {
+                                }).then((service_area) => {
 
-                                        user.addServiceArea(service_area);
+                                    user.addServiceArea(service_area);
 
-                                        let customer = Array.from({ length: 5 }, (_, index) => ({
-                                            name: faker.person.fullName(),
-                                            address: faker.location.streetAddress(),
-                                            contact_no: faker.number.int({ min: 7000000000, max: 9999999999 }),
-                                            whatsapp_no: faker.number.int({ min: 7000000000, max: 9999999999 }),
-                                            _sid: service_area.s_id
-                                        }));
-                                        Customer.bulkCreate(customer).then((customers) => {
-                                            customers.map((customer, index) => {
-                                                //LOOP
-                                                setTimeout(() => {
-                                                    console.log(new Date().getTime())
-                                                    let amount = 200;
-                                                    let date = faker.date.recent({ days: 10 })
-                                                    Invoice.create({
-                                                        _type: 'BILL',
-                                                        _desc: faker.lorem.sentence(),
-                                                        _no: 0,
+                                    let customer = Array.from({ length: 5 }, (_, index) => ({
+                                        name: faker.person.fullName(),
+                                        address: faker.location.streetAddress(),
+                                        contact_no: faker.number.int({ min: 7000000000, max: 9999999999 }),
+                                        whatsapp_no: faker.number.int({ min: 7000000000, max: 9999999999 }),
+                                        _sid: service_area.s_id
+                                    }));
+                                    Customer.bulkCreate(customer).then((customers) => {
+                                        customers.map((customer, index) => {
+                                            //LOOP
+                                            setTimeout(() => {
+                                                console.log(new Date().getTime())
+                                                let amount = 200;
+                                                let date = faker.date.recent({ days: 10 })
+                                                Invoice.create({
+                                                    _type: 'BILL',
+                                                    _desc: faker.lorem.sentence(),
+                                                    _no: 0,
 
-                                                        amount: amount,
-                                                        date: date,
+                                                    amount: amount,
+                                                    date: date,
 
 
-                                                        _cid: customer.c_id,
-                                                        _sid: service_area.s_id,
-                                                        _uid: user.u_id
+                                                    _cid: customer.c_id,
+                                                    _sid: service_area.s_id,
+                                                    _uid: user.u_id
 
-                                                    }).then((invoice) => {
+                                                }).then((invoice) => {
 
-                                                        Receipt.create(
+                                                    Receipt.create(
 
-                                                            {
-                                                                _no: '0',
-                                                                _type: "BILLS",
-                                                                _desc: "THIS IS A TEST RECEIPT",
-                                                                amount: amount,
-                                                                date: date,
+                                                        {
+                                                            _no: '0',
+                                                            _type: "BILLS",
+                                                            _desc: "THIS IS A TEST RECEIPT",
+                                                            amount: amount,
+                                                            date: date,
+                                                            _cid: customer.c_id,
+                                                            _sid: service_area.s_id,
+                                                            _iid: invoice.i_id,
+                                                            _uid: user.u_id,
+                                                            createdAt: new Date(),
+                                                            updatedAt: new Date()
+                                                        }
+
+                                                    ).then((receipt) => {
+
+                                                        Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                            console.log(data);
+                                                            Invoice.create({
+
+                                                                _type: 'BILL',
+                                                                _desc: faker.lorem.sentence(),
+                                                                _no: 0,
+
+                                                                amount: 200,
+                                                                date: faker.date.recent({ days: 3 }),
+
                                                                 _cid: customer.c_id,
                                                                 _sid: service_area.s_id,
-                                                                _iid: invoice.i_id,
-                                                                _uid: user.u_id,
-                                                                createdAt: new Date(),
-                                                                updatedAt: new Date()
-                                                            }
+                                                                _uid: user.u_id
 
-                                                        ).then((receipt) => {
-
-                                                            Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
-                                                                console.log(data);
-                                                                Invoice.create({
-
-                                                                    _type: 'BILL',
-                                                                    _desc: faker.lorem.sentence(),
-                                                                    _no: 0,
-
-                                                                    amount: 200,
-                                                                    date: faker.date.recent({ days: 3 }),
-
-                                                                    _cid: customer.c_id,
-                                                                    _sid: service_area.s_id,
-                                                                    _uid: user.u_id
-
-                                                                });
-                                                            }).catch((err) => {
-                                                                res.send(`${err}`);
-                                                                console.log(err);
                                                             });
-
                                                         }).catch((err) => {
-                                                            res.send(`RECEIPT : ${err}`);
+                                                            res.send(`${err}`);
                                                             console.log(err);
                                                         });
 
                                                     }).catch((err) => {
-                                                        res.send(`${err}`);
+                                                        res.send(`RECEIPT : ${err}`);
                                                         console.log(err);
                                                     });
-                                                }, 500 * index + 1);
 
-                                                if (customers.length - 1 == index) {
-                                                    setTimeout(() => { res.send('Synced - event ') }, 510 * index + 1);
-                                                }
-                                                //LOOP
-                                            });
-                                        })
-                                    });
+                                                }).catch((err) => {
+                                                    res.send(`${err}`);
+                                                    console.log(err);
+                                                });
+                                            }, 500 * index + 1);
+
+                                            if (customers.length - 1 == index) {
+                                                setTimeout(() => { res.send('Synced - event ') }, 510 * index + 1);
+                                            }
+                                            //LOOP
+                                        });
+                                    })
                                 });
-                            }
-                        });
+                            });
+                        }
                     });
-        //         });
-        //     });
+                });
+                //         });
+            });
         });
     }, (err) => {
         res.send(`${err}`);
