@@ -100,7 +100,17 @@ app.get('/mock', function () {
                               _sid: service_area.s_id,
                               _uid: user.u_id
                             }).then(invoice => {
-                              _model.Receipt.create({}).then(receipt => {
+                              _model.Receipt.create({
+                                _no: '0',
+                                _type: "BILLS",
+                                _desc: "THIS IS A TEST RECEIPT",
+                                amount: amount,
+                                date: date,
+                                _cid: customer.c_id,
+                                _sid: service_area.s_id,
+                                _iid: invoice.i_id,
+                                _uid: user.u_id
+                              }).then(receipt => {
                                 _model.Invoice.update({
                                   _rid: receipt.r_id
                                 }, {
