@@ -12,8 +12,8 @@ export default defineConfig({
         short_name: 'C Agent',
         description: 'Collection Agent for Water Supply',
         start_url: './',
-        background_color: '#ffffff',
-        theme_color: '#000000',
+        background_color: '#7e22ce',
+        theme_color: '#7e22ce',
         icons: [
           {
             src: '/icon.png',

@@ -24,17 +24,19 @@ import { Listbox, Transition } from "@headlessui/react";
 import {
   CheckIcon,
   ChevronDownIcon,
-  Cog6ToothIcon,
-  DocumentChartBarIcon,
-  MapIcon,
+  
   QrCodeIcon,
 } from "@heroicons/react/20/solid";
 import Test from "./etc/pages/qr";
-import { PowerIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { PowerIcon, UserCircleIcon, ChartPieIcon, DocumentChartBarIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { Customer, Customers } from "./etc/pages/customers";
 import ManagePage from "./etc/pages/manage";
 
 import BottomNav from "./etc/components/bottomnav";
+
+
+import { Menu } from '@headlessui/react'
+
 
 const AppContext = createContext();
 
@@ -240,7 +242,7 @@ class AppHomeRoutes extends Component {
                 <Route path="*" element={<Example404 />} />
               </Routes>
             </div>
-            <p value={JSON.stringify(this.state)} />
+            
           </AppContext.Provider>
         )}
         {this.state.error && (
@@ -260,7 +262,7 @@ function AppHome() {
   let navigate = useNavigate();
   return (
     <>
-      <div className="bg-violet-700 fixed top-0 bottom-0 left-0 right-0 min-h-screen min-w-fit">
+      <div className="bg-purple-700 fixed top-0 bottom-0 left-0 right-0 min-h-screen min-w-fit">
           <HomeSelector />
       </div>
     </>
@@ -386,10 +388,62 @@ function HomeSelector() {
 
 
         <div>
-        <NavLink to="/logout" className="flex items-center gap-1">
+        {/* <NavLink to="/logsout" className="flex items-center gap-1"> */}
+            <div>
 
-            <PowerIcon className="text-red-500" width={24} />
-          </NavLink>
+
+            {/* <PowerIcon className="text-red-500" width={24} /> */}
+                            
+
+            <div className=" text-right">
+               
+      <Menu as="div" className="relative inline-block text-left">
+        
+        <div>
+          <Menu.Button className="inline-flex items-center w-full justify-center rounded-md py-2 px-3 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+            <img className="w-6 h-6 border-2 rounded-full" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+
+            <ChevronDownIcon
+              className="-mr-1 ml-2 h-5 w-5 text-violet-200 hover:text-violet-100"
+              aria-hidden="true"
+            />
+          </Menu.Button>
+        </div>
+        <Menu.Items className="absolute z-10 right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+            
+        <div className="px-1 py-1 ">
+              <Menu.Item>
+            
+                    <div className="text-sm px-2 py-2">View account</div>
+               
+                </Menu.Item>
+              </div>
+            
+            <div className="px-1 py-1 ">
+              <Menu.Item>
+                {({ active }) => (
+                  <NavLink to="/logout"
+                    className={`${
+                      active ? 'bg-purple-700 text-white' : 'text-gray-900'
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  >
+                    Logout
+                  
+                  </NavLink>
+                )}
+              </Menu.Item>
+              
+              </div>
+              
+              </Menu.Items>
+     
+      </Menu>
+      </div>
+                            
+         
+      </div>
+         
+          {/* </NavLink> */}
           </div>
       </div>
 
@@ -400,7 +454,7 @@ function HomeSelector() {
 
 
 
-      <div className="bg-white rounded-2xl overflow-y-auto p-4 h-full">
+      <div className="bg-white rounded-t-[2rem] overflow-y-auto p-4 h-full">
         <div className="w-2/5">
           <input
             type="date"
@@ -468,16 +522,18 @@ function AppLocation({ location, date }) {
       {loaded && date && data && (
         <div className="pt-4 ">
           <div className="border rounded-lg bg-white drop-shadow-lg ">
-            <div className="bg-gray-100 py-2.5 px-2  flex justify-between">
-              <h6 className="font-semibold text-xl">Day book</h6>
-              <button className="bg-violet-700 text-white px-4 py-1 rounded-full flex items-center gap-1">
+            <div className="bg-gray-100 py-2.5 px-3  flex justify-between">
+              <h6 className="font-semibold text-lg text-gray-800">Day book</h6>
+              <button className="bg-gray-200 border border-gray-300 text-gray-800 px-3 pr-4 py-1 rounded-full flex items-center gap-1 text-xs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-5 h-5"
+                  className="w-4
+                   h-4
+                  "
                 >
                   <path
                     strokeLinecap="round"
@@ -534,15 +590,17 @@ function AppLocation({ location, date }) {
           <div className="mt-4 flex gap-2 w-full">
             <NavLink
               to={`${service_area.s_id}/customers/collection`}
-              className="bg-gray-100 flex-1 p-4  rounded-lg flex gap-2 items-center font-semibold"
+              className="bg-gray-100 border border-green-500 bg-green-100 text-green-800 flex-1 p-4  rounded-lg flex gap-2 items-center font-semibold"
             >
+                <div className="flex items-center justify-center p-2  text-green-800 rounded-full">
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-5 h-5"
               >
                 <path
                   strokeLinecap="round"
@@ -550,20 +608,25 @@ function AppLocation({ location, date }) {
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
                 />
               </svg>
+                </div>
               Collection <span>({data?.collection || 0})</span>
             </NavLink>
 
+
+
             <NavLink
-              to={`${service_area.s_id}/customers/pendings`}
-              className="bg-gray-100 flex-1 p-4  rounded-lg flex gap-2 items-center font-semibold"
+              to={`${service_area.s_id}/customers/pending`}
+              className="bg-gray-100 border border-red-500 bg-red-100 text-red-800 flex-1 p-4  rounded-lg flex gap-2 items-center font-semibold"
             >
+                <div className="flex items-center justify-center p-2  text-red-800 rounded-full">
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-5 h-5"
               >
                 <path
                   strokeLinecap="round"
@@ -571,32 +634,15 @@ function AppLocation({ location, date }) {
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
                 />
               </svg>
+                </div>
               Pending <span>({data?.pending || 0})</span>
             </NavLink>
-          </div>
+            </div>
 
-          <NavLink
-            to={`${service_area.s_id}/customers`}
-            className="mt-2 bg-gray-100 flex-1 p-4  rounded-lg flex gap-2 items-center font-semibold"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-              />
-            </svg>
-            Customers <span>({data?.customers || 0})</span>
-          </NavLink>
+           
 
-          <div className="fixed bottom-10 shadow-2xl right-2  text-white bg-violet-700 rounded-full px-4  py-2.5 ">
+
+          <div className="FAB fixed bottom-5 shadow-2xl right-2  text-white bg-purple-700 rounded-full px-4  py-2.5 ">
             <NavLink
               to={`qr/${service_area?.s_id}`}
               className="flex items-center gap-2 "
@@ -606,38 +652,42 @@ function AppLocation({ location, date }) {
             </NavLink>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 text-center my-4">
+
+        <hr className="mt-6 mb-4" />
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1 my-4">
             <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-              <NavLink to={`qr/${service_area?.s_id}`}>
-                <QrCodeIcon />
-                <h2 className="text-xs">Scan QR</h2>
+              <NavLink to={`${service_area.s_id}/customers`}>
+                <UserCircleIcon className="w-9 h-9 stroke-1.5" />
+                
+           
+                <h2 className="text-sm mt-1">Customers</h2>
               </NavLink>
             </div>
             {service_area._owner_uid === data.u_id && (
               <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
                 <NavLink to={`overview/${service_area?.s_id}`}>
-                  <MapIcon />
-                  <h2 className="text-xs">Overview</h2>
+                  <ChartPieIcon className="w-9 h-9 stroke-1.5"/>
+                  <h2 className="text-sm mt-1">Overview</h2>
                 </NavLink>
               </div>
             )}
             <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
               <NavLink to={`reports/${service_area?.s_id}`}>
-                <DocumentChartBarIcon />
-                <h2 className="text-xs">Reports</h2>
+                <DocumentChartBarIcon className="w-9 h-9 stroke-1.5"/>
+                <h2 className="text-sm mt-1">Reports</h2>
               </NavLink>
             </div>
             {service_area._owner_uid === data.u_id && (
               <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
                 <NavLink to={`manage/${service_area?.s_id}`}>
-                  <Cog6ToothIcon />
-                  <h2 className="text-xs">Manage</h2>
+                  <Cog6ToothIcon className="w-9 h-9 stroke-1.5" />
+                  <h2 className="text-sm mt-1">Manage</h2>
                 </NavLink>
               </div>
             )}
           </div>
 
-          <BottomNav />
+          {/* <BottomNav /> */}
         </div>
       )}
       {!loaded && <>Loading..</>}

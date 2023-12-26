@@ -1,1 +1,1 @@
-{"name":"Collection Agent","short_name":"C Agent","start_url":"./","display":"standalone","background_color":"#ffffff","lang":"en","scope":"/","description":"Collection Agent for Water Supply","theme_color":"#000000","icons":[{"src":"/icon.png","sizes":"512x512","type":"image/png"}]}
+{"name":"Collection Agent","short_name":"C Agent","start_url":"./","display":"standalone","background_color":"#7e22ce","lang":"en","scope":"/","description":"Collection Agent for Water Supply","theme_color":"#7e22ce","icons":[{"src":"/icon.png","sizes":"512x512","type":"image/png"}]}
