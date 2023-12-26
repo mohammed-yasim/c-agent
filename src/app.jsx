@@ -155,17 +155,7 @@ app.get('/mock', async (req, res) => {
 
                                                     }).then((invoice) => {
 
-                                                        Receipt.create({
-                                                            _no: '0',
-                                                            _type: "BILLS",
-                                                            _desc: "THIS IS A TEST RECEIPT",
-                                                            amount: amount,
-                                                            date: date,
-                                                            _cid: customer.c_id,
-                                                            _sid: service_area.s_id,
-                                                            _iid: invoice.i_id,
-                                                            _uid: user.u_id,
-                                                        }).then((receipt) => {
+                                                        Receipt.create({}).then((receipt) => {
 
                                                             Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
                                                                 console.log(data);
