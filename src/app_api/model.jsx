@@ -113,15 +113,13 @@ Receipt.init({
     _desc: { type: infox_datatype.TEXT, allowNull: true },
     //-
     amount: { type: infox_datatype.DECIMAL, allowNull: false },
-    date: { type: infox_datatype.DATEONLY, allowNull: true },
+    date: { type: infox_datatype.DATEONLY, allowNull: false },
     //--
     deleted: { type: infox_datatype.INTEGER, defaultValue: 0, allowNull: false },
     //
     data: { type: infox_datatype.JSON, allowNull: true }
 
-
-
-}, { sequelize: infox_db, tableName: 'receipts', timestamps: false });
+}, { sequelize: infox_db, tableName: 'receipts' });
 
 Activity.init({
     _type: { type: infox_datatype.STRING, allowNull: false },

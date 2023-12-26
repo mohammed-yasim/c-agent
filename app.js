@@ -100,42 +100,28 @@ app.get('/mock', function () {
                               _sid: service_area.s_id,
                               _uid: user.u_id
                             }).then(invoice => {
-                              _model.Receipt.create({
-                                _no: 0,
-                                _type: 'BILL-RECEIPT',
-                                _desc: '',
-                                amount: amount,
-                                _cid: customer.c_id,
-                                _sid: service_area.s_id,
-                                _iid: invoice.i_id,
-                                _uid: user.u_id
-                              }).then(receipt => {
-                                _model.Invoice.update({
-                                  _rid: receipt.r_id
-                                }, {
-                                  where: {
-                                    i_id: invoice.i_id
-                                  }
-                                }).then(data => {
-                                  console.log(data);
-                                  _model.Invoice.create({
-                                    _type: 'BILL',
-                                    _desc: _faker.faker.lorem.sentence(),
-                                    _no: 0,
-                                    amount: 200,
-                                    date: _faker.faker.date.recent({
-                                      days: 3
-                                    }),
-                                    _cid: customer.c_id,
-                                    _sid: service_area.s_id,
-                                    _uid: user.u_id
-                                  });
-                                }).catch(err => {
-                                  res.send("".concat(err));
-                                  console.log(err);
+                              _model.Invoice.update({
+                                _rid: null
+                              }, {
+                                where: {
+                                  i_id: invoice.i_id
+                                }
+                              }).then(data => {
+                                console.log(data);
+                                _model.Invoice.create({
+                                  _type: 'BILL',
+                                  _desc: _faker.faker.lorem.sentence(),
+                                  _no: 0,
+                                  amount: 200,
+                                  date: _faker.faker.date.recent({
+                                    days: 3
+                                  }),
+                                  _cid: customer.c_id,
+                                  _sid: service_area.s_id,
+                                  _uid: user.u_id
                                 });
                               }).catch(err => {
-                                res.send("RECEIPT : ".concat(err));
+                                res.send("".concat(err));
                                 console.log(err);
                               });
                             }).catch(err => {

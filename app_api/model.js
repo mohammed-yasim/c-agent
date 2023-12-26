@@ -279,7 +279,7 @@ Receipt.init({
   },
   date: {
     type: _db.infox_datatype.DATEONLY,
-    allowNull: true
+    allowNull: false
   },
   deleted: {
     type: _db.infox_datatype.INTEGER,
@@ -292,8 +292,7 @@ Receipt.init({
   }
 }, {
   sequelize: _db.infox_db,
-  tableName: 'receipts',
-  timestamps: false
+  tableName: 'receipts'
 });
 Activity.init({
   _type: {
