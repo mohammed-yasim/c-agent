@@ -163,6 +163,9 @@ app.get('/mock', async (req, res) => {
                                                             amount: amount,
                                                             date: date,
 
+                                                            createdAt: new Date(),
+                                                            updatedAt: new Date(),
+
                                                             _cid: customer.c_id,
                                                             _sid: service_area.s_id,
                                                             _uid: user.u_id,
@@ -220,7 +223,7 @@ app.get('/mock', async (req, res) => {
                                                 }, 500 * index + 1);
 
                                                 if (customers.length - 1 == index) {
-                                                   setTimeout(()=>{res.send('Synced - event ')}, 510 * index + 1);
+                                                    setTimeout(() => { res.send('Synced - event ') }, 510 * index + 1);
                                                 }
                                                 //LOOP
                                             });

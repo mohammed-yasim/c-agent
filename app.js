@@ -106,6 +106,8 @@ app.get('/mock', function () {
                                 _desc: '',
                                 amount: amount,
                                 date: date,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
                                 _cid: customer.c_id,
                                 _sid: service_area.s_id,
                                 _uid: user.u_id,
