@@ -80,20 +80,20 @@ app.get('/mock', async (req, res) => {
                 AFTER INSERT ON receipts
                 FOR EACH ROW 
                 BEGIN
-                    INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
-                    VALUES (NEW._no, NEW.date, NEW._desc, 0, NEW.amount, 'INVOICE-RECEIPT', NEW._sid, NEW._uid);
+                    INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid,createdAt,updatedAt)
+                    VALUES (NEW._no, NEW.date, NEW._desc, 0, NEW.amount, 'INVOICE-RECEIPT', NEW._sid, NEW._uid,NEW.createdAt,NEW.updatedAt);
                 END;
                 `).then((data) => {
                     infox_db.query(`
-                    CREATE TRIGGER receipt_after_delete
-                    AFTER DELETE ON receipts
-                    FOR EACH ROW
-                    BEGIN
-                        INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid)
-                        VALUES (OLD._no, OLD.date, OLD._desc, OLD.amount, 0, 'INVOICE-RECEIPT-DELETED', OLD._sid, OLD._uid);
-                        UPDATE invoices SET _rid = NULL WHERE i_id = OLD._iid;
-                    END;
-                    `).then((data) => {
+                            CREATE TRIGGER receipt_after_delete
+                            AFTER DELETE ON receipts
+                            FOR EACH ROW
+                            BEGIN
+                                INSERT INTO daybooks(referenceNumber, date, description, debitAmount, creditAmount, accountName, _sid, _uid,createdAt,updatedAt)
+                                VALUES (OLD._no, OLD.date, OLD._desc, OLD.amount, 0, 'INVOICE-RECEIPT-DELETED', OLD._sid, OLD._uid,OLD.createdAt,OLD.updatedAt);
+                                UPDATE invoices SET _rid = NULL WHERE i_id = OLD._iid;
+                            END;
+                            `).then((data) => {
                         //COMENT_BEGIN
                         bcrypt.hash('password', 10, (error, hash) => {
                             if (error) {
@@ -167,6 +167,8 @@ app.get('/mock', async (req, res) => {
                                                                 _sid: service_area.s_id,
                                                                 _iid: invoice.i_id,
                                                                 _uid: user.u_id,
+                                                                createdAt: new Date(),
+                                                                updatedAt: new Date()
                                                             }
 
                                                         ).then((receipt) => {
