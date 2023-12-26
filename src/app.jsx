@@ -155,63 +155,43 @@ app.get('/mock', async (req, res) => {
 
                                                     }).then((invoice) => {
 
-                                                        // Receipt.create({
-                                                        //     _no: 0,
-                                                        //     _type: 'BILL-RECEIPT',
-                                                        //     _desc: '',
+                                                        Receipt.create({
+                                                            _no: 0,
+                                                            _type: "BILLS",
+                                                            _desc: "",
+                                                            amount: amount,
+                                                            date: date,
+                                                            _cid: customer.c_id,
+                                                            _sid: service_area.s_id,
+                                                            _iid: invoice.i_id,
+                                                            _uid: user.u_id,
+                                                        }).then((receipt) => {
 
-                                                        //     amount: amount,
-                                                        //     date: new Date(),
-                                                        //     _cid: customer.c_id,
-                                                        //     _sid: service_area.s_id,
-                                                        //     _iid: invoice.i_id,
-                                                        //     _uid: user.u_id,
+                                                            Invoice.update({ _rid: receipt.r_id }, { where: { i_id: invoice.i_id } }).then((data) => {
+                                                                console.log(data);
+                                                                Invoice.create({
 
-                                                        // }).then((receipt) => {
+                                                                    _type: 'BILL',
+                                                                    _desc: faker.lorem.sentence(),
+                                                                    _no: 0,
 
-                                                        // Daybook.create({
-                                                        //     referenceNumber: faker.finance.iban(),
-                                                        //     date: receipt.date,
-                                                        //     description: faker.lorem.sentence(),
+                                                                    amount: 200,
+                                                                    date: faker.date.recent({ days: 3 }),
 
-                                                        //     debitAmount: 0,
-                                                        //     creditAmount: receipt.amount,
+                                                                    _cid: customer.c_id,
+                                                                    _sid: service_area.s_id,
+                                                                    _uid: user.u_id
 
-                                                        //     accountName: faker.finance.accountName(),
-
-                                                        //     notes: faker.lorem.paragraph(),
-
-                                                        //     _sid: service_area.s_id,
-                                                        //     _uid: user.u_id,
-
-                                                        // }).then((daybook) => {
-
-                                                        Invoice.update({ _rid: null }, { where: { i_id: invoice.i_id } }).then((data) => {
-                                                            console.log(data);
-                                                            Invoice.create({
-
-                                                                _type: 'BILL',
-                                                                _desc: faker.lorem.sentence(),
-                                                                _no: 0,
-
-                                                                amount: 200,
-                                                                date: faker.date.recent({ days: 3 }),
-
-                                                                _cid: customer.c_id,
-                                                                _sid: service_area.s_id,
-                                                                _uid: user.u_id
-
+                                                                });
+                                                            }).catch((err) => {
+                                                                res.send(`${err}`);
+                                                                console.log(err);
                                                             });
+
                                                         }).catch((err) => {
-                                                            res.send(`${err}`);
+                                                            res.send(`RECEIPT : ${err}`);
                                                             console.log(err);
                                                         });
-
-                                                        // })
-                                                        // }).catch((err) => {
-                                                        //     res.send(`RECEIPT : ${err}`);
-                                                        //     console.log(err);
-                                                        // });
 
                                                     }).catch((err) => {
                                                         res.send(`${err}`);
