@@ -654,34 +654,36 @@ function AppLocation({ location, date }) {
 
 
         <hr className="mt-6 mb-4" />
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1 my-4">
-            <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-              <NavLink to={`${service_area.s_id}/customers`}>
-                <UserCircleIcon className="w-9 h-9 stroke-1.5" />
+          <div className="flex justify-between gap-1 my-4">
+            <div className=" p-2 flex-1">
+              <NavLink className={"flex flex-col items-center"} to={`${service_area.s_id}/customers`}>
+                <UserCircleIcon className="w-9 h-9 stroke-1.5 text-purple-900" />
                 
            
-                <h2 className="text-sm mt-1">Customers</h2>
+                <h2 className="text-sm mt-1 text-purple-900 font-semibold">Customers</h2>
               </NavLink>
             </div>
             {service_area._owner_uid === data.u_id && (
-              <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                <NavLink to={`overview/${service_area?.s_id}`}>
-                  <ChartPieIcon className="w-9 h-9 stroke-1.5"/>
-                  <h2 className="text-sm mt-1">Overview</h2>
+              <div className=" p-2 flex-1">
+                <NavLink className={"flex flex-col items-center"} to={`overview/${service_area?.s_id}`}>
+                  <ChartPieIcon className="w-9 h-9 stroke-1.5 text-purple-900"/>
+                  <h2 className="text-sm mt-1 text-purple-900 font-semibold">Overview</h2>
                 </NavLink>
               </div>
             )}
-            <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-              <NavLink to={`reports/${service_area?.s_id}`}>
-                <DocumentChartBarIcon className="w-9 h-9 stroke-1.5"/>
-                <h2 className="text-sm mt-1">Reports</h2>
+            <div className=" p-2 flex-1">
+              <NavLink className={"flex flex-col items-center"} to={`reports/${service_area?.s_id}`}>
+                <DocumentChartBarIcon className="w-9 h-9 stroke-1.5 text-purple-900"/>
+                <h2 className="text-sm mt-1 text-purple-900 font-semibold">Reports</h2>
               </NavLink>
             </div>
             {service_area._owner_uid === data.u_id && (
-              <div className="bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 p-2">
-                <NavLink to={`manage/${service_area?.s_id}`}>
-                  <Cog6ToothIcon className="w-9 h-9 stroke-1.5" />
-                  <h2 className="text-sm mt-1">Manage</h2>
+              <div className=" p-2 flex-1">
+
+               
+                <NavLink className={"flex flex-col items-center"} to={`manage/${service_area?.s_id}`}>
+                  <Cog6ToothIcon className="w-9 h-9 stroke-1.5 text-purple-900" />
+                  <h2 className="text-sm mt-1 text-purple-900 font-semibold">Manage</h2>
                 </NavLink>
               </div>
             )}
