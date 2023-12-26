@@ -105,11 +105,12 @@ Invoice.init({
 
 
 Receipt.init({
-    r_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
 
+    r_id: { primaryKey: true, type: infox_sequlize.UUID, defaultValue: infox_datatype.UUIDV4, allowNull: false },
+    
     _no: { type: infox_datatype.STRING, allowNull: true },
     _type: { type: infox_datatype.STRING, allowNull: false },
-    _desc: { type: infox_datatype.TEXT, allowNull: false },
+    _desc: { type: infox_datatype.TEXT, allowNull: true },
     //-
     amount: { type: infox_datatype.DECIMAL, allowNull: false },
     date: { type: infox_datatype.DATEONLY, allowNull: false },

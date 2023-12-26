@@ -5,7 +5,7 @@ import { infox_db } from './app_api/etc/db';
 import { Configuration, Customer, Daybook, Invoice, Receipt, ServiceArea, User } from './app_api/model';
 import API from './app_api';
 import bcrypt from 'bcryptjs';
-import { faker } from '@faker-js/faker';
+import { faker, ne } from '@faker-js/faker';
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -161,15 +161,12 @@ app.get('/mock', async (req, res) => {
                                                             _desc: '',
 
                                                             amount: amount,
-                                                            date: date,
-
-                                                            createdAt: new Date(),
-                                                            updatedAt: new Date(),
+                                                            date: new Date(),
 
                                                             _cid: customer.c_id,
                                                             _sid: service_area.s_id,
+                                                            _iid: invoice.i_id,
                                                             _uid: user.u_id,
-                                                            _iid: invoice.i_id
 
                                                         }).then((receipt) => {
                                                             // Daybook.create({

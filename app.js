@@ -105,13 +105,11 @@ app.get('/mock', function () {
                                 _type: 'BILL-RECEIPT',
                                 _desc: '',
                                 amount: amount,
-                                date: date,
-                                createdAt: new Date(),
-                                updatedAt: new Date(),
+                                date: new Date(),
                                 _cid: customer.c_id,
                                 _sid: service_area.s_id,
-                                _uid: user.u_id,
-                                _iid: invoice.i_id
+                                _iid: invoice.i_id,
+                                _uid: user.u_id
                               }).then(receipt => {
                                 _model.Invoice.update({
                                   _rid: receipt.r_id
