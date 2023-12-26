@@ -141,7 +141,7 @@ app.get('/mock', async (req, res) => {
                                                     let amount = 200;
                                                     let date = faker.date.recent({ days: 10 })
                                                     Invoice.create({
-                                                        _type: 'type',
+                                                        _type: 'BILL',
                                                         _desc: faker.lorem.sentence(),
                                                         _no: 0,
 
@@ -156,9 +156,9 @@ app.get('/mock', async (req, res) => {
                                                     }).then((invoice) => {
 
                                                         Receipt.create({
-                                                            _no: faker.finance.iban(),
-                                                            _type: 'type',
-                                                            _desc: faker.lorem.sentence(),
+                                                            _no: 0,
+                                                            _type: 'BILL-RECEIPT',
+                                                            _desc: '',
 
                                                             amount: amount,
                                                             date: date,
@@ -190,7 +190,7 @@ app.get('/mock', async (req, res) => {
                                                                 console.log(data);
                                                                 Invoice.create({
 
-                                                                    _type: 'type',
+                                                                    _type: 'BILL',
                                                                     _desc: faker.lorem.sentence(),
                                                                     _no: 0,
 

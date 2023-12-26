@@ -91,7 +91,7 @@ app.get('/mock', function () {
                               days: 10
                             });
                             _model.Invoice.create({
-                              _type: 'type',
+                              _type: 'BILL',
                               _desc: _faker.faker.lorem.sentence(),
                               _no: 0,
                               amount: amount,
@@ -101,9 +101,9 @@ app.get('/mock', function () {
                               _uid: user.u_id
                             }).then(invoice => {
                               _model.Receipt.create({
-                                _no: _faker.faker.finance.iban(),
-                                _type: 'type',
-                                _desc: _faker.faker.lorem.sentence(),
+                                _no: 0,
+                                _type: 'BILL-RECEIPT',
+                                _desc: '',
                                 amount: amount,
                                 date: date,
                                 _cid: customer.c_id,
@@ -120,7 +120,7 @@ app.get('/mock', function () {
                                 }).then(data => {
                                   console.log(data);
                                   _model.Invoice.create({
-                                    _type: 'type',
+                                    _type: 'BILL',
                                     _desc: _faker.faker.lorem.sentence(),
                                     _no: 0,
                                     amount: 200,
